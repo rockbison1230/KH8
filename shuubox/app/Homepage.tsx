@@ -6,7 +6,7 @@ import Footer from "@/Components/Footer";
 
 export default function Home() {
   return (
-    <div >
+    <div items-center justify-between >
       <main >
         <Headers/>
         <Homepage_body/>
