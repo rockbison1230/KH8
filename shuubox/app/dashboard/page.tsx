@@ -5,7 +5,7 @@ import { auth } from "@/lib/firebase";
 import { signOut, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import Sidebar from "@/components/sidebar";
 
 // A simple hook to get the current user (you can move this to its own file later)
 function useUser() {
@@ -18,50 +18,28 @@ function useUser() {
   return user;
 }
 
-// Sidebar component (internal to this file)
-function Sidebar() {
-  const router = useRouter();
-  const handleSignOut = async () => {
-    await signOut(auth);
-  };
 
-  const navItems = ["Home", "Profile", "Friends", "Stats", "Discord"];
-  
-  return (
-    <aside className="w-64 bg-gray-100 p-6 flex flex-col h-screen">
-      <h1 className="text-2xl font-bold mb-8">Shuubox</h1>
-      <nav className="flex flex-col space-y-4">
-        {navItems.map((item) => (
-          <a
-            key={item}
-            href="#"
-            className="flex items-center space-x-3 text-gray-700 hover:text-black"
-          >
-            <span className="w-3 h-3 bg-gray-400 rounded-full"></span>
-            <span>{item}</span>
-          </a>
-        ))}
-      </nav>
-      <div className="flex-grow"></div>
-      <a
-        href="#"
-        onClick={handleSignOut}
-        className="flex items-center space-x-3 text-gray-700 hover:text-black"
-      >
-        <span className="w-3 h-3 bg-gray-400 rounded-full"></span>
-        <span>Log Out</span>
-      </a>
-    </aside>
-  );
-}
 
-function ListCard({ title }: { title: string }) {
-  return (
-    <div className="bg-gray-200 rounded-2xl h-48 w-40 flex items-end justify-center p-4">
+// List card component
+import Link from "next/link";
+
+type ListCardProps = {
+  title: string;
+  href?: string; // optional link
+};
+
+function ListCard({ title, href }: ListCardProps) {
+  const content = (
+    <div className="bg-gray-200 rounded-2xl h-48 w-40 flex items-end justify-center p-4 hover:bg-gray-300 transition">
       <span className="font-semibold">{title}</span>
     </div>
   );
+
+  // If href is provided, make the whole card clickable
+  return href ? <Link href={href}>{content}</Link> : content;
 }
+
+
 function CreateNewCard() {
   return (
     <div className="bg-gray-200 rounded-2xl h-48 w-40 flex flex-col items-center justify-center p-4">
@@ -94,13 +72,11 @@ export default function DashboardPage() {
           <div>
             <h3 className="text-2xl font-semibold mb-6">Your Lists</h3>
             <div className="grid grid-cols-4 gap-6">
-              <ListCard title="Movies" />
-              <ListCard title="Albums" />
-              <ListCard title="Shows" />
-              <ListCard title="Games" />
-              <ListCard title="Books" />
-              <ListCard title="" />
-              <ListCard title="" />
+              <ListCard title="Movies" href="/movies" />
+              <ListCard title="Albums" href="/albums"/>
+              <ListCard title="Shows" href="/shows"/>
+              <ListCard title="Games" href="/games"/>
+              <ListCard title="Books" href="/books"/>
               <CreateNewCard />
             </div>
           </div>
