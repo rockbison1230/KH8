@@ -4,7 +4,7 @@ const Profilepage = () => {
     const data = {
         Uid:1,
         username:'Bob',
-        bio:'i am not an elitist| i draw tho | i like reading VNs and LNs, even tho im a slow reader',
+        bio:'Test',
         lists:[
             {Lid: 101, listname:'Anime', itemimg:''  },
             {Lid: 102, listname:'Movies', itemimg:''  },
@@ -40,7 +40,7 @@ const Profilepage = () => {
   return (
     <div className='w-[78%] absolute right-5'>
         <div className='flex  items-center gap-x-5 m-6'>
-        <img className= 'w-35 h-35 rounded-full border-4 ' src="/Images/PFPplaceholder.jpg" alt={data.username} />
+        <img className= 'w-35 h-35 rounded-full border-4 ' src="/Images/PFPplaceholder.png" alt={data.username} />
         <p className='text-[60px] font-semibold'>{data.username}</p>
         <button type='button' className='border-2 rounded-3xl w-25 size-12 text-[20px}'>Add friend</button>
         <img className='size-10' src="/Images/Copyicon.png" alt="" />
@@ -50,7 +50,7 @@ const Profilepage = () => {
         </div>
 
 
-        <div className='bg-gray-400 rounded-4xl border-4'>
+        <div className='bg-[#FFEBFF] rounded-4xl border-4'>
         <h1 className='text-[50px] font-semibold m-6 mb-1 '>Lists</h1>
         <div className="grid grid-cols-4  ">
         <ListCard title='Books'/>
@@ -63,7 +63,7 @@ const Profilepage = () => {
             </div>
         </div>
         
-        <div className='bg-gray-400 rounded-4xl border-4 mt-6'>
+        <div className='bg-[#C3FFAF] rounded-4xl border-4 mt-6'>
         <h1 className='text-[50px] font-semibold mb-6 p-1'> Achivements</h1>
         
         <div className="grid grid-cols-8  p-3"/>    
