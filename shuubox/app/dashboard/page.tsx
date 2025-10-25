@@ -96,9 +96,9 @@ export default function DashboardPage() {
             <div className="grid grid-cols-4 gap-6">
               <ListCard title="Movies" />
               <ListCard title="Albums" />
-              <ListCard title="" />
-              <ListCard title="" />
-              <ListCard title="" />
+              <ListCard title="Shows" />
+              <ListCard title="Games" />
+              <ListCard title="Books" />
               <ListCard title="" />
               <ListCard title="" />
               <CreateNewCard />
