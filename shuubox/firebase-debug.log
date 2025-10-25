@@ -1,0 +1,130 @@
+[debug] [2025-10-25T16:00:56.250Z] ----------------------------------------------------------------------
+[debug] [2025-10-25T16:00:56.255Z] Command:       /opt/homebrew/Cellar/node/24.9.0/bin/node /usr/local/bin/firebase emulators:start --only functions,firestore,auth
+[debug] [2025-10-25T16:00:56.256Z] CLI Version:   14.22.0
+[debug] [2025-10-25T16:00:56.256Z] Platform:      darwin
+[debug] [2025-10-25T16:00:56.256Z] Node Version:  v24.9.0
+[debug] [2025-10-25T16:00:56.256Z] Time:          Sat Oct 25 2025 12:00:56 GMT-0400 (Eastern Daylight Time)
+[debug] [2025-10-25T16:00:56.256Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-10-25T16:00:56.378Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-25T16:00:56.379Z] > authorizing via signed-in user (amanamartin8@gmail.com)
+[debug] [2025-10-25T16:00:56.580Z] java version "23.0.2" 2025-01-21
+Java(TM) SE Runtime Environment (build 23.0.2+7-58)
+
+[debug] [2025-10-25T16:00:56.581Z] Java HotSpot(TM) 64-Bit Server VM (build 23.0.2+7-58, mixed mode, sharing)
+
+[debug] [2025-10-25T16:00:56.587Z] Parsed Java major version: 23
+[info] i  emulators: Starting emulators: auth, functions, firestore {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore"}}
+[debug] [2025-10-25T16:00:56.825Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-10-25T16:00:56.826Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-10-25T16:00:56.826Z] [firestore] Firestore Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-10-25T16:00:56.826Z] [firestore.websocket] websocket server for firestore only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-10-25T16:00:56.826Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2025-10-25T16:00:56.828Z] Emulator locator file path: /var/folders/8v/zc4sr1b543n790wytkhx7jkw0000gn/T/hub-shuubox-cba9b.json
+[debug] [2025-10-25T16:00:56.828Z] [hub] writing locator at /var/folders/8v/zc4sr1b543n790wytkhx7jkw0000gn/T/hub-shuubox-cba9b.json
+[debug] [2025-10-25T16:00:56.939Z] [functions] Functions Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-10-25T16:00:56.939Z] [eventarc] Eventarc Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-10-25T16:00:56.939Z] [tasks] Cloud Tasks Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2025-10-25T16:00:56.939Z] late-assigned ports for functions and eventarc emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}],"firestore":[{"address":"127.0.0.1","family":"IPv4","port":8080}],"firestore.websocket":[{"address":"127.0.0.1","family":"IPv4","port":9150}],"functions":[{"address":"127.0.0.1","family":"IPv4","port":5001}],"eventarc":[{"address":"127.0.0.1","family":"IPv4","port":9299}],"tasks":[{"address":"127.0.0.1","family":"IPv4","port":9499}]},"metadata":{"message":"late-assigned ports for functions and eventarc emulators"}}
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: apphosting, database, hosting, pubsub, storage, dataconnect {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mapphosting, database, hosting, pubsub, storage, dataconnect\u001b[22m"}}
+[debug] [2025-10-25T16:00:56.957Z] defaultcredentials: writing to file /Users/amanamartin/.config/firebase/amanamartin8_gmail_com_application_default_credentials.json
+[debug] [2025-10-25T16:00:56.959Z] Setting GAC to /Users/amanamartin/.config/firebase/amanamartin8_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /Users/amanamartin/.config/firebase/amanamartin8_gmail_com_application_default_credentials.json"}}
+[debug] [2025-10-25T16:00:56.959Z] Checked if tokens are valid: false, expires at: 1761382637582
+[debug] [2025-10-25T16:00:56.959Z] Checked if tokens are valid: false, expires at: 1761382637582
+[debug] [2025-10-25T16:00:56.959Z] > refreshing access token with scopes: []
+[debug] [2025-10-25T16:00:56.960Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2025-10-25T16:00:56.960Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-10-25T16:00:57.057Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2025-10-25T16:00:57.057Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2025-10-25T16:00:57.066Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/shuubox-cba9b/adminSdkConfig [none]
+[debug] [2025-10-25T16:00:57.416Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/shuubox-cba9b/adminSdkConfig 200
+[debug] [2025-10-25T16:00:57.416Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/shuubox-cba9b/adminSdkConfig {"projectId":"shuubox-cba9b","storageBucket":"shuubox-cba9b.firebasestorage.app"}
+[debug] [2025-10-25T16:00:57.434Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-10-25T16:00:57.435Z] Ignoring unsupported arg: single_project_mode_error {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: single_project_mode_error"}}
+[debug] [2025-10-25T16:00:57.435Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/Users/amanamartin/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar","--host","127.0.0.1","--port",8080,"--websocket_port",9150,"--project_id","shuubox-cba9b","--rules","/Users/amanamartin/Desktop/GitHub/KH8/shuubox/firestore.rules","--single_project_mode",true,"--functions_emulator","127.0.0.1:5001"],"optionalArgs":["port","webchannel_port","host","rules","websocket_port","functions_emulator","seed_from_export","project_id","single_project_mode"],"joinArgs":false,"shell":false,"port":8080} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/Users/amanamartin/.cache/firebase/emulators/cloud-firestore-emulator-v1.19.8.jar\",\"--host\",\"127.0.0.1\",\"--port\",8080,\"--websocket_port\",9150,\"--project_id\",\"shuubox-cba9b\",\"--rules\",\"/Users/amanamartin/Desktop/GitHub/KH8/shuubox/firestore.rules\",\"--single_project_mode\",true,\"--functions_emulator\",\"127.0.0.1:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"websocket_port\",\"functions_emulator\",\"seed_from_export\",\"project_id\",\"single_project_mode\"],\"joinArgs\":false,\"shell\":false,\"port\":8080}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[debug] [2025-10-25T16:00:58.143Z] Oct 25, 2025 12:00:58 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start
+INFO: Started WebSocket server on ws://127.0.0.1:9150
+ {"metadata":{"emulator":{"name":"firestore"},"message":"Oct 25, 2025 12:00:58 PM com.google.cloud.datastore.emulator.firestore.websocket.WebSocketServer start\nINFO: Started WebSocket server on ws://127.0.0.1:9150\n"}}
+[debug] [2025-10-25T16:00:58.159Z] API endpoint: http://127.0.0.1:8080
+ {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://127.0.0.1:8080\n"}}
+[debug] [2025-10-25T16:00:58.159Z] If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
+
+   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080
+
+If you are running a Firestore in Datastore Mode project, run:
+
+   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080
+
+Note: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.
+Dev App Server is now running.
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=127.0.0.1:8080\n\nIf you are running a Firestore in Datastore Mode project, run:\n\n   export DATASTORE_EMULATOR_HOST=127.0.0.1:8080\n\nNote: Support for Datastore Mode is in preview. If you encounter any bugs please file at https://github.com/firebase/firebase-tools/issues.\nDev App Server is now running.\n\n"}}
+[info] ✔  firestore: Firestore Emulator UI websocket is running on 9150. {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator UI websocket is running on 9150."}}
+[info] i  functions: Watching "/Users/amanamartin/Desktop/GitHub/KH8/shuubox/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/Users/amanamartin/Desktop/GitHub/KH8/shuubox/functions\" for Cloud Functions..."}}
+[debug] [2025-10-25T16:01:01.553Z] Validating nodejs source
+[debug] [2025-10-25T16:01:02.206Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "cors": "^2.8.5",
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.25.4",
+    "firebase-functions-test": "^3.1.0",
+    "typescript": "^5.7.3"
+  },
+  "private": true
+}
+[debug] [2025-10-25T16:01:02.207Z] Building nodejs source
+[debug] [2025-10-25T16:01:02.207Z] Failed to find version of module node: reached end of search path /Users/amanamartin/Desktop/GitHub/KH8/shuubox/functions/node_modules
+[warn] ⚠  functions: Your requested "node" version "22" doesn't match your global version "24". Using node@24 from host. 
+[debug] [2025-10-25T16:01:02.209Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-10-25T16:01:02.212Z] Found firebase-functions binary at '/Users/amanamartin/Desktop/GitHub/KH8/shuubox/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8194
+
+[debug] [2025-10-25T16:01:02.684Z] Got response from /__/functions.yaml {"endpoints":{"getDiscordAuthURL":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"callableTrigger":{},"entryPoint":"getDiscordAuthURL"},"discordOAuthRedirect":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"httpsTrigger":{},"entryPoint":"discordOAuthRedirect"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] ✔  functions: Loaded functions definitions from source: getDiscordAuthURL, discordOAuthRedirect. {"metadata":{"emulator":{"name":"functions"},"message":"Loaded functions definitions from source: getDiscordAuthURL, discordOAuthRedirect."}}
+[info] ✔  functions[us-central1-getDiscordAuthURL]: http function initialized (http://127.0.0.1:5001/shuubox-cba9b/us-central1/getDiscordAuthURL). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/shuubox-cba9b/us-central1/getDiscordAuthURL)."}}
+[info] ✔  functions[us-central1-discordOAuthRedirect]: http function initialized (http://127.0.0.1:5001/shuubox-cba9b/us-central1/discordOAuthRedirect). {"metadata":{"emulator":{"name":"functions"},"message":"\u001b[1mhttp\u001b[22m function initialized (http://127.0.0.1:5001/shuubox-cba9b/us-central1/discordOAuthRedirect)."}}
+[debug] [2025-10-25T16:01:06.742Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase Data Connect VSCode extension, this is expected and not an issue.
+[info] 
+┌─────────────────────────────────────────────────────────────┐
+│ ✔  All emulators ready! It is now safe to connect your app. │
+│ i  View Emulator UI at http://127.0.0.1:4000/               │
+└─────────────────────────────────────────────────────────────┘
+
+┌────────────────┬────────────────┬─────────────────────────────────┐
+│ Emulator       │ Host:Port      │ View in Emulator UI             │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4000/auth      │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Functions      │ 127.0.0.1:5001 │ http://127.0.0.1:4000/functions │
+├────────────────┼────────────────┼─────────────────────────────────┤
+│ Firestore      │ 127.0.0.1:8080 │ http://127.0.0.1:4000/firestore │
+└────────────────┴────────────────┴─────────────────────────────────┘
+  Emulator Hub host: 127.0.0.1 port: 4400
+  Other reserved ports: 4500, 9150
+
+Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
+ 
