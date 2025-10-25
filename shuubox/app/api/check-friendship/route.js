@@ -1,4 +1,4 @@
-import { db } from '../../../lib/firebase'; 
+import { dbAdmin } from '../../../lib/firebase-admin'; 
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -16,8 +16,8 @@ export async function GET(request) {
   }
 
   try {
-    const userADoc = await db.collection('users').where('discordId', '==', userA_id).limit(1).get();
-    const userBDoc = await db.collection('users').where('discordId', '==', userB_id).limit(1).get();
+    const userADoc = await dbAdmin.collection('users').where('discordId', '==', userA_id).limit(1).get();
+    const userBDoc = await dbAdmin.collection('users').where('discordId', '==', userB_id).limit(1).get();
 
     const userAExists = !userADoc.empty;
     const userBExists = !userBDoc.empty;

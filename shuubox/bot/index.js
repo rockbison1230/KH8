@@ -13,8 +13,9 @@ import 'dotenv/config'; // Loads .env variables
 // Create the bot
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-// When the bot logs in
-client.on('ready', () => {
+// --- RECOMMENDED CHANGE: clientReady event ---
+// When the bot logs in (Replaces 'ready' to avoid deprecation warning)
+client.on('clientReady', () => {
   console.log(`✅ Shuubot is online and logged in as ${client.user.tag}!`);
 });
 
@@ -25,36 +26,51 @@ client.on('interactionCreate', async interaction => {
   const { commandName } = interaction;
 
   if (commandName === 'recommend') {
+    
+    // --- STEP 1: DEFER REPLY IMMEDIATELY ---
+    // This acknowledges the command within 3 seconds, preventing the 'Unknown Interaction' error.
+    await interaction.deferReply({ ephemeral: false });
+
     const recommendingUser = interaction.user;
     const targetUser = interaction.options.getUser('friend');
     const mediaName = interaction.options.getString('media');
 
     // --- Safety Checks ---
     if (targetUser.bot) {
-      return interaction.reply({ content: "You can't recommend media to a bot!", ephemeral: true });
+      // Must use .editReply because we already deferred
+      return interaction.editReply({ content: "You can't recommend media to a bot!", ephemeral: true });
     }
     if (targetUser.id === recommendingUser.id) {
-      return interaction.reply({ content: "You can't recommend media to yourself!", ephemeral: true });
+      return interaction.editReply({ content: "You can't recommend media to yourself!", ephemeral: true });
     }
 
     try {
-      // 1. Call your Next.js API
+      // 1. Call your API
       const apiResponse = await fetch(
-        // IMPORTANT: Use your localhost:3000 URL since you're testing locally
         `http://localhost:3000/api/check-friendship?userA_id=${recommendingUser.id}&userB_id=${targetUser.id}`,
         {
-          headers: {
-            'X-Bot-Secret': process.env.BOT_SECRET_KEY
-          }
+          headers: { 'X-Bot-Secret': process.env.BOT_SECRET_KEY }
         }
       );
       
-      const { status } = await apiResponse.json();
+      // 2. Check for non-200 errors (e.g., 401 Unauthorized, 500 Internal Server Error)
+      if (!apiResponse.ok) {
+          const errorBody = await apiResponse.text();
+          console.error(`API Error: ${apiResponse.status} - ${errorBody}`);
+          return interaction.editReply({
+             content: `[DEBUG ERROR] API failed with status ${apiResponse.status}. Check your Next.js terminal!`,
+             ephemeral: true
+          });
+      }
 
-      // 3. Use a switch to handle every case
+      // 3. Parse the JSON response
+      const { status } = await apiResponse.json(); 
+
+      // 4. Use a switch to handle every case
       switch (status) {
         
         case 'FRIENDS':
+          // --- SUCCESS LOGIC ---
           const addUrl = `http://localhost:3000/dashboard/add?title=${encodeURIComponent(mediaName)}`;
           const row = new ActionRowBuilder()
             .addComponents(
@@ -71,34 +87,56 @@ client.on('interactionCreate', async interaction => {
             .addFields({ name: 'Media', value: `**${mediaName}**` })
             .setThumbnail(recommendingUser.displayAvatarURL());
 
-          await interaction.reply({
+          // Use editReply to send the final public message
+          await interaction.editReply({
             content: `<@${targetUser.id}>, check this out!`,
             embeds: [embed],
             components: [row]
           });
           break;
 
+        // --- FAILURE CASES (All must use editReply with ephemeral: true) ---
+
         case 'NOT_FRIENDS':
-          // ... (all the other cases: NOT_FRIENDS, USER_A_NOT_FOUND, etc.)
-          await interaction.reply({
+          await interaction.editReply({
             content: `You can only send recommendations to your Shuubox friends. Add <@${targetUser.id}> on the app first!`,
             ephemeral: true 
           });
           break;
-        
-        // ... add the other 'case' blocks here ...
+
+        case 'USER_A_NOT_FOUND':
+          await interaction.editReply({
+            content: `You need to sign up for a Shuubox account before you can recommend media!`,
+            ephemeral: true
+          });
+          break;
+
+        case 'USER_B_NOT_FOUND':
+          await interaction.editReply({
+            content: `<@${targetUser.id}> doesn't have a Shuubox account yet. Tell them to sign up so you can send recommendations!`,
+            ephemeral: true
+          });
+          break;
+          
+        case 'BOTH_NOT_FOUND':
+          await interaction.editReply({
+            content: `This function can't be performed because neither you nor <@${targetUser.id}> have a Shuubox account. You both need to sign up first!`,
+            ephemeral: true
+          });
+          break;
 
         default:
-          await interaction.reply({
-            content: 'Oops! Something went wrong. Please try again later.',
+          await interaction.editReply({
+            content: `Oops! Something went wrong. The API returned an unknown status: ${status}.`,
             ephemeral: true
           });
       }
 
     } catch (error) {
-      console.error(error);
-      await interaction.reply({
-        content: 'Oops! An error occurred while contacting the Shuubox server.',
+      // This catches JSON parse errors or other connection failures
+      console.error("Critical Bot Error during API processing:", error); 
+      await interaction.editReply({
+        content: 'Oops! An internal bot error occurred after receiving the API response. Check console for details.',
         ephemeral: true
       });
     }

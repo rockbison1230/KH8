@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "FIRESTORE_EMULATOR_HOST=localhost:8080 next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
     "firebase": "^12.4.0",
+    "firebase-admin": "^13.5.0",
     "firebase-functions": "^6.6.0",
     "next": "16.0.0",
     "postcss": "^8.5.6",
