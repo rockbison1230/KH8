@@ -2,14 +2,15 @@ import Image from "next/image";
 import Headers from "@/Components/Headers";
 import Homepage_body from "@/Components/Homepage_body";
 import Footer from "@/Components/Footer";
-import Sidebar from "@/Components/Sidebar"
+
 
 export default function Home() {
   return (
     <div >
       <main >
-        <Sidebar/>
-       <p>Fart</p>
+        <Headers/>
+        <Homepage_body/>
+      <Footer/>
         
         
       </main>

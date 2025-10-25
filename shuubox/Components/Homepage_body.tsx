@@ -26,7 +26,7 @@ const Homepage_body = () => {
       <div className='py-70 text-center'>
       <h1 className='text-[50px] '>Meet Shuubot</h1>
       <p className='text-center text-[35px] px-20'>Meet Shuubot your friendly companion on Discord! Track your stats, check off items, and show off your completion streaks right from your server. A quick !shuustats is all it takes to flex your media milestones.</p>
-      <button type='button' className='text-white
+      <button  type='button' className='text-white
           bg-[#7E7E7E]
         m-20
         rounded-4xl

@@ -1,7 +1,6 @@
 import React from 'react'
 import Shuubox from '@/Icons/shuubox.svg'
 
-
 function Headers() {
   return (
    
