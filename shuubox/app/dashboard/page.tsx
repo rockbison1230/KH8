@@ -40,14 +40,14 @@ function ListCard({ title, href }: ListCardProps) {
 }
 
 
-function CreateNewCard() {
-  return (
-    <div className="bg-gray-200 rounded-2xl h-48 w-40 flex flex-col items-center justify-center p-4">
-      <span className="text-4xl font-light">+</span>
-      <span className="font-semibold">Create New</span>
-    </div>
-  );
-}
+// function CreateNewCard() {
+//   return (
+//     <div className="bg-gray-200 rounded-2xl h-48 w-40 flex flex-col items-center justify-center p-4">
+//       <span className="text-4xl font-light">+</span>
+//       <span className="font-semibold">Create New</span>
+//     </div>
+//   );
+// }
 
 export default function DashboardPage() {
   const user = useUser();
@@ -77,7 +77,7 @@ export default function DashboardPage() {
               <ListCard title="Shows" href="/shows"/>
               <ListCard title="Games" href="/games"/>
               <ListCard title="Books" href="/books"/>
-              <CreateNewCard />
+              {/* <CreateNewCard /> */}
             </div>
           </div>
         </main>
