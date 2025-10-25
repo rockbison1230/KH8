@@ -1,9 +1,7 @@
-// app/page.tsx
-"use client"; // Good for a landing page with interactive links/buttons
+"use client"; 
 
 import Link from 'next/link';
 
-// A simple header component to hold your nav buttons
 function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
@@ -26,7 +24,6 @@ function Header() {
   );
 }
 
-// A simple section component
 function FeatureSection({ title, children }: { title: string, children: React.ReactNode }) {
   return (
     <section className="py-16 px-6 bg-white text-center">
@@ -38,13 +35,11 @@ function FeatureSection({ title, children }: { title: string, children: React.Re
   );
 }
 
-// Your main public landing page
 export default function PublicHomePage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       <Header />
 
-      {/* Hero Section */}
       <main className="pt-32 pb-16 text-center px-6">
         <h1 className="text-5xl font-bold text-gray-900 mb-6">
           All your media, in one place
@@ -55,7 +50,6 @@ export default function PublicHomePage() {
         </p>
       </main>
 
-      {/* Feature Sections */}
       <div className="bg-gray-100">
         <FeatureSection title="Your media's new home">
           Shuubox is your cozy corner for everything you love — movies,
@@ -92,7 +86,6 @@ export default function PublicHomePage() {
         </button>
       </FeatureSection>
 
-      {/* Footer */}
       <footer className="text-center p-6 bg-white text-gray-600">
         Shuubox - Built with ❤️ at KnightHacks 2025.
       </footer>

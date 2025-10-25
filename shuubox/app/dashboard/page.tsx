@@ -1,13 +1,13 @@
 "use client";
 
 import AuthGate from "@/components/AuthGate";
+import OnboardingGate from "@/components/OnboardingGate";
 import { auth } from "@/lib/firebase";
 import { signOut, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-// A simple hook to get the current user (you can move this to its own file later)
 function useUser() {
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
@@ -17,8 +17,6 @@ function useUser() {
   }, []);
   return user;
 }
-
-// Sidebar component (internal to this file)
 function Sidebar() {
   const router = useRouter();
   const handleSignOut = async () => {
@@ -42,7 +40,7 @@ function Sidebar() {
           </a>
         ))}
       </nav>
-      <div className="flex-grow"></div>
+      <div className="grow"></div>
       <a
         href="#"
         onClick={handleSignOut}
@@ -76,10 +74,10 @@ export default function DashboardPage() {
 
   return (
     <AuthGate>
+      <OnboardingGate>
       <div className="flex min-h-screen">
         <Sidebar />
         <main className="flex-1 p-10 bg-white">
-          {/* Header section */}
           <header className="flex justify-between items-center mb-10">
             <h2 className="text-3xl text-gray-400">Dashboard</h2>
             <div className="flex items-center space-x-4">
@@ -106,6 +104,7 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
+      </OnboardingGate>
     </AuthGate>
   );
 }

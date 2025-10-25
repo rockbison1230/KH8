@@ -33,11 +33,11 @@ export const getDiscordAuthURL = onCall(async (request) => {
     throw new HttpsError("failed-precondition", "Missing config: set discord.client_id.");
   }
 
-  const redirectUri = LOCAL_REDIRECT; // keep this single source of truth
+  const redirectUri = LOCAL_REDIRECT; 
 
   const params = new URLSearchParams({
     client_id: clientId,
-    redirect_uri: redirectUri,           // do not pre-encode here
+    redirect_uri: redirectUri,          
     response_type: "code",
     scope: "identify email",
     state,
