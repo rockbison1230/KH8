@@ -40,7 +40,7 @@ if (token) {
           await ensureUserDoc(userCredential.user); 
           
           // 3. Now redirect to home
-          router.push("/");
+          router.push("/dashboard");
         })
         .catch((err) => {
           console.error(err);

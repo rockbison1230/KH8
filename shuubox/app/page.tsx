@@ -1,85 +1,101 @@
-import Image from "next/image";
-import SignUp from "./signup/page";
+// app/page.tsx
+"use client"; // Good for a landing page with interactive links/buttons
+
 import Link from 'next/link';
 
-export default function Home() {
+// A simple header component to hold your nav buttons
+function Header() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-white">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          src="/shuubox.svg"
-          alt="My Logo"
-          width={250} 
-          height={100} 
-        />
-        <Link href="/signup">
-          <button>
-          Sign Up
-          </button>
-        </Link>
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          {/* <?xml version="1.0" encoding="UTF-8"?> */}
-          {/* <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 424.6 85.21">
-            <defs>
-              <style>
-                .cls-1 {
-                  letter-spacing: -.06em; */}
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+      <nav className="container mx-auto px-6 py-3 flex justify-between items-center">
+        <div className="text-2xl font-bold text-gray-800">Shuubox</div>
+        <div className="flex space-x-4">
+          <Link href="/login">
+            <button className="px-5 py-2 text-gray-700 bg-gray-200 rounded-lg font-medium hover:bg-gray-300">
+              Log In
+            </button>
+          </Link>
+          <Link href="/signup">
+            <button className="px-5 py-2 text-white bg-blue-600 rounded-lg font-medium hover:bg-blue-700">
+              Sign Up
+            </button>
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
+      </nav>
+    </header>
+  );
+}
 
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+// A simple section component
+function FeatureSection({ title, children }: { title: string, children: React.ReactNode }) {
+  return (
+    <section className="py-16 px-6 bg-white text-center">
+      <h2 className="text-3xl font-semibold text-gray-800 mb-4">{title}</h2>
+      <p className="max-w-2xl mx-auto text-lg text-gray-600">
+        {children}
+      </p>
+    </section>
+  );
+}
+
+// Your main public landing page
+export default function PublicHomePage() {
+  return (
+    <div className="bg-gray-50 min-h-screen">
+      <Header />
+
+      {/* Hero Section */}
+      <main className="pt-32 pb-16 text-center px-6">
+        <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          All your media, in one place
+        </h1>
+        <p className="text-xl text-gray-700 max-w-xl mx-auto">
+          Track what you watch, read, play, and listen to — all from one
+          dashboard.
+        </p>
       </main>
+
+      {/* Feature Sections */}
+      <div className="bg-gray-100">
+        <FeatureSection title="Your media's new home">
+          Shuubox is your cozy corner for everything you love — movies,
+          games, books, music, TV shows... you name it. No more juggling
+          between five different apps or scrolling through a giant wall of
+          text on your notes app. Just one clean, happy space to keep it all
+          together.
+        </FeatureSection>
+      </div>
+
+      <FeatureSection title="How it works">
+        Add whatever you want to watch, read, or play. Check it off when
+        you're done. Watch your list turn from chaos to calm. Bonus: it's
+        oddly satisfying.
+      </FeatureSection>
+
+      <div className="bg-gray-100">
+        <FeatureSection title="Connect With Friends">
+          Share your lists, see what your friends are into, and celebrate
+          every "finished" moment together. Shuubox makes it easy to
+          swap recommendations, compare progress, and cheer each
+          other on — because finishing a show feels better when someone
+          else gets it.
+        </FeatureSection>
+      </div>
+      
+      <FeatureSection title="Meet Shuubot">
+        Meet Shuubot — your friendly companion on Discord! Track your
+        stats, check off items, and show off your completion streaks right
+        from your server.
+        <br />
+        <button className="mt-6 px-6 py-2 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300">
+          get shuubot
+        </button>
+      </FeatureSection>
+
+      {/* Footer */}
+      <footer className="text-center p-6 bg-white text-gray-600">
+        Shuubox - Built with ❤️ at KnightHacks 2025.
+      </footer>
     </div>
   );
 }
