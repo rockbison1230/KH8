@@ -67,10 +67,10 @@ const Profilepage = () => {
 
    function ListBadge({ title }: { title: string }) {
   return (
-    <div>
-    <div className="bg-gray-200 rounded-full h-40 w-40 flex items-end justify-center p-4">
+    <div className='inline-block align-middle'>
+    <div className="bg-gray-200 rounded-full h-40 w-40 flex items-end justify-center p-5">
     </div>
-    <span className="font-semibold">{title}</span>
+    <span className="  font-semibold text-center p-8">{title}</span>
     </div>
   );
 }
@@ -111,7 +111,7 @@ const Profilepage = () => {
         <div className='bg-[#C3FFAF] rounded-4xl border-4 mt-6'>
         <h1 className='text-[50px] font-semibold mb-6 p-1'> Achivements</h1>
         
-        <div className="grid grid-cols-8  p-3"/>    
+        <div className="grid grid-cols-8  p-3 "/>    
         <ListBadge title= '1st addition'/>
         </div>
 

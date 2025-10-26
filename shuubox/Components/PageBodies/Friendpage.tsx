@@ -4,7 +4,7 @@ function ListFriend({ title }: { title: string }) {
   return (
     <div>
       <div className="bg-gray-200 rounded-full h-60 w-60 flex items-end justify-center p-4 ml-5 border-4"></div>
-      <span className="font-semibold">{title}</span>
+      <span className="font-semibold p-22.5">{title}</span>
     </div>
   );
 }
