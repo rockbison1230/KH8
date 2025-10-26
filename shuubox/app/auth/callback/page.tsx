@@ -17,37 +17,36 @@ export default function AuthCallbackPage() {
     const state = searchParams.get("state");
     const error = searchParams.get("error");
 
-    // Always clear stored state once read (prevents reuse)
-    const originalState = sessionStorage.getItem("oauth_state");
-    sessionStorage.removeItem("oauth_state");
+    // Read & clear from localStorage (works across tabs)
+    const originalState = localStorage.getItem("oauth_state");
+    const ts = Number(localStorage.getItem("oauth_state_ts") || "0");
+    localStorage.removeItem("oauth_state");
+    localStorage.removeItem("oauth_state_ts");
 
-    // 1) If Discord sent an error, show it immediately
     if (error) {
       setMessage(`Error: ${decodeURIComponent(error)}`);
       return;
     }
 
-    // 2) Validate state presence and match
-    if (!state || !originalState || state !== originalState) {
-      setMessage("Error: Invalid state. Please start the login again.");
+    // Optional expiry (10 minutes)
+    const tooOld = !ts || Date.now() - ts > 10 * 60 * 1000;
+
+    if (!state || !originalState || state !== originalState || tooOld) {
+      setMessage("Error: Invalid or expired state. Please start the login again.");
       return;
     }
 
-    // 3) Require token
     if (!token) {
       setMessage("Error: No authentication token provided.");
       return;
     }
 
-    // 4) Sign in with Firebase custom token
     (async () => {
       try {
         const cred = await signInWithCustomToken(auth, token);
-        // Create/merge a user doc if you need it
         try {
           await ensureUserDoc(cred.user);
         } catch (e) {
-          // Non-fatal for sign-in; log but continue
           console.warn("[ensureUserDoc] optional step failed:", e);
         }
         router.replace("/dashboard");

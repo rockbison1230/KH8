@@ -38,8 +38,10 @@ export default function SignUpPage() {
       setError("");
       setAuthing(true);
 
-      const state = makeState();
-      sessionStorage.setItem("oauth_state", state);
+   const state = makeState();
+localStorage.setItem("oauth_state", state);
+localStorage.setItem("oauth_state_ts", String(Date.now())); 
+
 
       const url = buildDiscordAuthorizeURL(state);
       console.log("[OAuth] authorize URL", url);

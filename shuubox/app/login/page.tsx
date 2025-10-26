@@ -37,9 +37,10 @@ export default function LoginPage() {
     try {
       setError("");
       setAuthing(true);
+const state = makeState();
+localStorage.setItem("oauth_state", state);
+localStorage.setItem("oauth_state_ts", String(Date.now())); // optional: expiry guard
 
-      const state = makeState();
-      sessionStorage.setItem("oauth_state", state);
 
       const url = buildDiscordAuthorizeURL(state);
       console.log("[OAuth] authorize URL", url);
