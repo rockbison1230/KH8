@@ -1,9 +1,10 @@
-// functions/src/index.ts
 import { onRequest } from "firebase-functions/v2/https";
 import { defineString } from "firebase-functions/params";
 import * as admin from "firebase-admin";
 import axios from "axios";
 import cors from "cors";
+// 🚨 CRITICAL FIX: Import functions for the V1 config API
+import * as functionsV1 from "firebase-functions"; 
 
 // --- Admin ---
 admin.initializeApp();
@@ -13,9 +14,9 @@ const db = admin.firestore();
 const TOKEN_URL = "https://discord.com/api/oauth2/token";
 const USER_INFO_URL = "https://discord.com/api/users/@me";
 
-// --- Runtime params (configure via `firebase functions:params:set`) ---
-const FRONTEND_BASE_URL = defineString("FRONTEND_BASE_URL");       // e.g. https://shuubox.vercel.app
-const FUNCTION_REDIRECT_URL = defineString("FUNCTION_REDIRECT_URL"); // this function's HTTPS URL
+// --- Runtime params (We still define them, but read from legacy config) ---
+const FRONTEND_BASE_URL_PARAM = defineString("FRONTEND_BASE_URL");
+const FUNCTION_REDIRECT_URL_PARAM = defineString("FUNCTION_REDIRECT_URL");
 
 // --- CORS ---
 // Allow localhost and your Vercel deployments
@@ -27,18 +28,27 @@ const allowedOrigins = [
 ];
 const corsHandler = cors({ origin: allowedOrigins });
 
+
 // --- Main handler ---
 export const discordOAuthRedirect = onRequest(
   {
     region: "us-central1",
     timeoutSeconds: 15,
-    secrets: ["DISCORD_CLIENT_ID", "DISCORD_CLIENT_SECRET"], // set with `functions:secrets:set`
+    secrets: ["DISCORD_CLIENT_ID", "DISCORD_CLIENT_SECRET"],
   },
   (req, res) => {
     corsHandler(req, res, async () => {
       const { code, state } = req.query as { code?: string; state?: string };
       const log = (step: string, extra: any = {}) =>
         console.log(`[OAuth] ${step}`, extra);
+
+      // --- 🚨 CRITICAL FIX: READ PARAMETERS FROM LEGACY CONFIG OBJECT 🚨 ---
+      // 1. Get the legacy config object
+      const runtimeConfig = functionsV1.config().runtime || {};
+      
+      // 2. Prioritize reading the lowercase legacy values, falling back to the parameter system
+      const redirectUri = runtimeConfig.function_redirect_url || FUNCTION_REDIRECT_URL_PARAM.value();
+      const frontendBaseUrl = runtimeConfig.frontend_base_url || FRONTEND_BASE_URL_PARAM.value();
 
       try {
         log("A: received query", { hasCode: !!code, hasState: !!state });
@@ -51,9 +61,12 @@ export const discordOAuthRedirect = onRequest(
           log("B0: Missing secrets", { hasCid: !!clientId, hasCs: !!clientSecret });
           throw new Error("Server not configured (client_id/secret).");
         }
+        
+        if (!redirectUri || !frontendBaseUrl) {
+           throw new Error("Function parameters (redirect/frontend URLs) are not configured.");
+        }
 
         // 1) Exchange code -> token (redirect_uri **must exactly match** the one registered in Discord)
-        const redirectUri = FUNCTION_REDIRECT_URL.value();
         const body = new URLSearchParams({
           client_id: clientId,
           client_secret: clientSecret,
@@ -138,7 +151,7 @@ export const discordOAuthRedirect = onRequest(
         // 5) Sign-in handoff
         log("H: issuing custom token and redirecting");
         const customToken = await admin.auth().createCustomToken(uid);
-        const frontend = FRONTEND_BASE_URL.value().replace(/\/+$/, "");
+        const frontend = frontendBaseUrl.replace(/\/+$/, "");
         return res.redirect(
           `${frontend}/auth/callback?token=${encodeURIComponent(
             customToken
@@ -159,7 +172,7 @@ export const discordOAuthRedirect = onRequest(
           responseData: e?.response?.data,
         });
 
-        const frontend = FRONTEND_BASE_URL.value().replace(/\/+$/, "");
+        const frontend = frontendBaseUrl.replace(/\/+$/, "");
         const safeState = typeof state === "string" ? state : "";
         return res.redirect(
           `${frontend}/auth/callback?error=${encodeURIComponent(
@@ -170,3 +183,4 @@ export const discordOAuthRedirect = onRequest(
     });
   }
 );
+
