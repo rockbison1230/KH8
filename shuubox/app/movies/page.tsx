@@ -83,7 +83,8 @@ function CreateNewCard({
   listId,
   userId, // <-- User ID added
 }: {
-  onAddMovie: (movie: Movie) => void;
+  // FIX: Change expected type to StateMovie because that's what is being created
+  onAddMovie: (movie: StateMovie) => void;
   listId: string | null;
   userId: string | null; // <-- User ID required for path
 }) {
@@ -138,10 +139,12 @@ function CreateNewCard({
 
       // Update UI immediately (add the doc ID to the temp object)
       onAddMovie({ 
-          ...movie,
+          title: movie.title,
+          image: movie.image || "/placeholder.png", // Ensure image is string
+          tmdbId: movie.tmdbId,
           // Pass the new Firestore document ID back to the parent list state
           id: docRef.id 
-      } as unknown as StateMovie); 
+      }); 
       
       setShowSearch(false);
       setSearchResults([]);
@@ -295,7 +298,8 @@ export default function MoviesPage() {
           {/* Grid of movie cards */}
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
             
-            {/* 🚨 FIX: Pass the listId and userId down to the CreateNewCard component */}
+            {/* FIX: Pass the listId and userId down to the CreateNewCard component */}
+            {/* FIX: The onAddMovie prop now correctly accepts StateMovie */}
             <CreateNewCard onAddMovie={addMovie} listId={listId} userId={userId} />
             
             {/* 🚨 FIX: Map over the state that is synced with the database */}
