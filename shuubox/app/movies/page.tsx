@@ -1,6 +1,6 @@
 // app/movies/page.jsx
 "use client"
-import Sidebar from "@/Components/sidebar";
+import Sidebar from "@/components/sidebar";
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
