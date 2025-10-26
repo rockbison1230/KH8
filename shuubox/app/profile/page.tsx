@@ -8,7 +8,7 @@ import Sidebars from "@/Components/Sidebara"
 export default function Home() {
   return (
     <div >
-      <main >
+      <main className="flex min-h-screen" >
         <Sidebars/>
         <Profilepage/>
         

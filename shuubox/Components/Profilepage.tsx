@@ -18,6 +18,7 @@ const Profilepage = () => {
     }
 
     function ListCard({ title }: { title: string }) {
+      
   return (
     <div className="bg-gray-200 rounded-2xl h-78 w-65 flex items-end justify-center p-4 m-5">
       <span className="font-semibold">{title}</span>
@@ -38,7 +39,7 @@ const Profilepage = () => {
     
 
   return (
-    <div className='w-[78%] absolute right-5'>
+    <div className='w-[80%] mx-auto, py-8 px-4'>
         <div className='flex  items-center gap-x-5 m-6'>
         <img className= 'w-35 h-35 rounded-full border-4 ' src="/Images/PFPplaceholder.png" alt={data.username} />
         <p className='text-[60px] font-semibold'>{data.username}</p>
