@@ -3,8 +3,8 @@ import { defineString } from "firebase-functions/params";
 import * as admin from "firebase-admin";
 import axios from "axios";
 import cors from "cors";
-// 🚨 CRITICAL FIX: Import functions for the V1 config API
-import * as functionsV1 from "firebase-functions"; 
+import * as functionsV1 from "firebase-functions";
+import { HttpsError, onCall } from "firebase-functions/v2/https"; // Import HttpsError and onCall
 
 // --- Admin ---
 admin.initializeApp();
@@ -14,7 +14,7 @@ const db = admin.firestore();
 const TOKEN_URL = "https://discord.com/api/oauth2/token";
 const USER_INFO_URL = "https://discord.com/api/users/@me";
 
-// --- Runtime params (We still define them, but read from legacy config) ---
+// --- Runtime params (configure via `firebase functions:params:set`) ---
 const FRONTEND_BASE_URL_PARAM = defineString("FRONTEND_BASE_URL");
 const FUNCTION_REDIRECT_URL_PARAM = defineString("FUNCTION_REDIRECT_URL");
 
@@ -29,7 +29,48 @@ const allowedOrigins = [
 const corsHandler = cors({ origin: allowedOrigins });
 
 
-// --- Main handler ---
+// ====================================================================
+// 🚨 MISSING FUNCTION: getDiscordAuthURL (Callable Function)
+// This function is called by the frontend to get the Discord URL
+// ====================================================================
+
+export const getDiscordAuthURL = onCall(async (request) => {
+  const state = request.data.state;
+  if (!state || typeof state !== "string") {
+    throw new HttpsError("invalid-argument", "A 'state' string must be provided.");
+  }
+
+  // --- Read Parameters ---
+  const runtimeConfig = functionsV1.config().runtime || {};
+  const redirectUri = runtimeConfig.function_redirect_url || FUNCTION_REDIRECT_URL_PARAM.value();
+
+  const clientId = process.env.DISCORD_CLIENT_ID;
+  if (!clientId) {
+    throw new HttpsError("failed-precondition", "Missing config: set discord.client_id.");
+  }
+  
+  if (!redirectUri) {
+     throw new HttpsError("failed-precondition", "Function parameters (redirect URL) are not configured.");
+  }
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,          
+    response_type: "code",
+    scope: "identify email",
+    state,
+  });
+
+  const url = `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+  return { url };
+});
+
+
+// ====================================================================
+// EXISTING FUNCTION: discordOAuthRedirect (HTTP Handler)
+// This is the function that Discord redirects to
+// ====================================================================
+
 export const discordOAuthRedirect = onRequest(
   {
     region: "us-central1",
@@ -43,10 +84,9 @@ export const discordOAuthRedirect = onRequest(
         console.log(`[OAuth] ${step}`, extra);
 
       // --- 🚨 CRITICAL FIX: READ PARAMETERS FROM LEGACY CONFIG OBJECT 🚨 ---
-      // 1. Get the legacy config object
       const runtimeConfig = functionsV1.config().runtime || {};
       
-      // 2. Prioritize reading the lowercase legacy values, falling back to the parameter system
+      // Get parameters needed for the redirect logic
       const redirectUri = runtimeConfig.function_redirect_url || FUNCTION_REDIRECT_URL_PARAM.value();
       const frontendBaseUrl = runtimeConfig.frontend_base_url || FRONTEND_BASE_URL_PARAM.value();
 
@@ -184,3 +224,5 @@ export const discordOAuthRedirect = onRequest(
   }
 );
 
+
+    
