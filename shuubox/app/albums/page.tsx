@@ -1,5 +1,10 @@
 // app/albums/page.jsx
+"use client"
 import Sidebar from "@/Components/sidebar";
+
+import { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function AlbumsPage() {
   // Example static data
@@ -64,6 +69,7 @@ export default function AlbumsPage() {
                 </div>
             </div>
             ))}
+            {/* <CreateNewCard onAddMovie={addMovie}/> */}
         </div>
         </main>
     </div>
