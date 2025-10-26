@@ -3,7 +3,8 @@
 import Sidebar from "@/Components/sidebar";
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/firebase"
+import Sidebars from "@/Components/Sidebara";
 
 
 type Movie = {
@@ -126,7 +127,7 @@ function CreateNewCard( { onAddMovie }: { onAddMovie: (movie: Movie) => void }) 
                                 <img
                                 src={movie.image}
                                 alt={movie.title}
-                                className="w-12 h-16 object-cover"
+                                className="w-12 h-16 object-cover border-8"
                                 />
                             )}
                             <span>{movie.title}</span>
@@ -152,17 +153,17 @@ export default function MoviesPage() {
     {
       id: 2,
       title: "Interstellar",
-      image: "https://m.media-amazon.com/images/I/71nK0iPgZtL._AC_SY679_.jpg",
+      image: "https://m.media-amazon.com/images/I/91JnoM0khKL._AC_UF1000,1000_QL80_.jpg",
     },
     {
       id: 3,
       title: "The Dark Knight",
-      image: "https://m.media-amazon.com/images/I/51k0qa6qHPL._AC_SY679_.jpg",
+      image: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_FMjpg_UX1000_.jpg",
     },
     {
       id: 4,
       title: "Dune: Part Two",
-      image: "https://m.media-amazon.com/images/I/91dSMhdIzTL._AC_SY679_.jpg",
+      image: "https://sfrareview.org/wp-content/uploads/2024/07/dune-part-two.jpg",
     },
   ]);
 
@@ -177,19 +178,17 @@ export default function MoviesPage() {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
+      <Sidebars />
       <main className="flex-1 p-10 bg-white">
 
       {/* Header */}
         <header className="flex justify-between items-center mb-10">
-        <h2 className="text-3xl text-gray-400">Movies</h2>
+        <h2 className="text-3xl text-black font-semibold">Movies</h2>
         <div className="flex items-center space-x-4">
-            <span className="w-10 h-10 bg-gray-300 rounded-full"></span>
-            <h3 className="text-2xl">
-            Your favorite films.
-            </h3>
+            
+            
         </div>
-        <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+        
         </header>
 
       {/* Grid of movie cards */}
@@ -197,12 +196,12 @@ export default function MoviesPage() {
         {movies.map((movie) => (
           <div
             key={movie.id}
-            className="bg-white w-40 rounded-2xl shadow hover:shadow-lg transition overflow-hidden"
+            className="bg-white w-50 rounded-2xl shadow hover:shadow-lg transition overflow-hidden border-4 "
           >
             <img
               src={movie.image}
               alt={movie.title}
-              className="w-40 h-60 object-cover"
+              className="w-50 h-60 object-cover"
             />
             <div className="p-3">
               <h2 className="text-lg font-semibold">{movie.title}</h2>

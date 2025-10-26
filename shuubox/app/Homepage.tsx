@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Headers from "@/Components/Headers";
-import Homepage_body from "@/Components/Homepage_body";
+import Homepage_body from "@/Components/PageBodies/Homepage_body";
 import Footer from "@/Components/Footer";
 
 

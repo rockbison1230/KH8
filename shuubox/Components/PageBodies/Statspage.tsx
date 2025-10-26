@@ -9,7 +9,7 @@ const Statspage = () => {
           src="/Images/PFPplaceholder.png"
           alt="user pfp"
         />
-        <h1 className="text-4xl">Your Stats</h1>\
+        <h1 className="text-4xl">Your Stats</h1>
       </div>
       <div className="mr-6">
       <div className="flex justify-between items-center gap-20 ">

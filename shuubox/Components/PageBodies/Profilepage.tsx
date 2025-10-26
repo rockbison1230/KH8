@@ -1,6 +1,12 @@
-import React, { }from 'react'
+
+import React, { useState } from 'react'
 import Image from "/Images/PFPplaceholder.jpg";
+
+
+
+
 const Profilepage = () => {
+  const [friendStatus, setFriendStatus] = useState('add');
     const data = {
         Uid:1,
         username:'Bob',
@@ -16,6 +22,39 @@ const Profilepage = () => {
             
         ]
     }
+
+
+    const handleFriendAction = () => {
+        if (friendStatus === 'add') {
+            // This is where you would typically:
+            // 1. Make an API call to send a friend request.
+            // 2. On success, update the local state.
+            console.log(`Sending friend request to ${data.username}...`);
+            setFriendStatus('pending');
+        } else if (friendStatus === 'pending') {
+            // Action to cancel the request
+            console.log(`Cancelling friend request to ${data.username}...`);
+            setFriendStatus('add');
+        } else if (friendStatus === 'friends') {
+            // Action to unfriend/block
+            console.log(`Unfriending ${data.username}...`);
+            // setFriendStatus('add'); // Maybe revert to 'add' or show a confirmation modal
+        }
+    };
+
+    // --- Helper for Button Content & Styling ---
+    // 4. Determine the button text and styles based on the current state.
+    let buttonText = 'Add friend';
+    let buttonClasses = 'border-5 rounded-4xl size-15 hover:bg-gray-200 hover:text hover:border-black-5 w-20'; // default Add friend style
+
+    if (friendStatus === 'pending') {
+        buttonText = 'Request Pending';
+        buttonClasses = 'border-black-5 bg-black text-white rounded-2xl size-15 rounded-4xl w-20'; // Pending style
+    } else if (friendStatus === 'friends') {
+        buttonText = 'Friends';
+        buttonClasses = 'border-black-5 bg-black text-white rounded-2xl size-15 rounded-4xl w-20'; // Friends style
+    }
+
 
     function ListCard({ title }: { title: string }) {
       
@@ -43,7 +82,12 @@ const Profilepage = () => {
         <div className='flex  items-center gap-x-5 m-6'>
         <img className= 'w-35 h-35 rounded-full border-4 ' src="/Images/PFPplaceholder.png" alt={data.username} />
         <p className='text-[60px] font-semibold'>{data.username}</p>
-        <button type='button' className='border-2 rounded-3xl w-25 size-12 text-[20px}'>Add friend</button>
+
+<button 
+    type='button' 
+    onClick={handleFriendAction} // Attached the handler
+    className={`... ${buttonClasses}`} // Applied dynamic classes
+>{buttonText} {/* Displayed dynamic text */}</button>
         <img className='size-10' src="/Images/Copyicon.png" alt="" />
         </div>
         <div className='m-6 mb-3 w-[33%]'>

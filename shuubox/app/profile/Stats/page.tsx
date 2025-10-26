@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebars from "@/Components/Sidebara";
-import Statspage from "@/Components/Statspage";
+import Statspage from "@/Components/PageBodies/Statspage";
 const page = () => {
   return (
     <div className="flex justify-between">

@@ -5,7 +5,7 @@ import { auth } from "@/lib/firebase";
 import { signOut, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import Sidebar from "@/Components/sidebar";
+import Sidebars from "@/Components/Sidebara";
 
 // A simple hook to get the current user (you can move this to its own file later)
 function useUser() {
@@ -30,7 +30,7 @@ type ListCardProps = {
 
 function ListCard({ title, href }: ListCardProps) {
   const content = (
-    <div className="bg-gray-200 rounded-2xl h-48 w-40 flex items-end justify-center p-4 hover:bg-gray-300 transition">
+    <div className="bg-gray-200 rounded-2xl h-84 w-70 flex items-end justify-center p-4 hover:bg-gray-300 transition border-4">
       <span className="font-semibold">{title}</span>
     </div>
   );
@@ -53,20 +53,20 @@ export default function DashboardPage() {
   const user = useUser();
 
   return (
-    <AuthGate>
+    
       <div className="flex min-h-screen">
-        <Sidebar />
+        <Sidebars />
         <main className="flex-1 p-10 bg-white">
           {/* Header section */}
           <header className="flex justify-between items-center mb-10">
-            <h2 className="text-3xl text-gray-400">Dashboard</h2>
+            
             <div className="flex items-center space-x-4">
-              <span className="w-10 h-10 bg-gray-300 rounded-full"></span>
+              <span className="w-20 h-20 bg-gray-300 rounded-full border-4"></span>
               <h3 className="text-2xl">
                 Welcome back, {user?.displayName || user?.email?.split('@')[0] || "User"}
               </h3>
             </div>
-            <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+            <div></div>
           </header>
 
           <div>
@@ -82,6 +82,6 @@ export default function DashboardPage() {
           </div>
         </main>
       </div>
-    </AuthGate>
+    
   );
 }
