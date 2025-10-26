@@ -1,4 +1,3 @@
-// bot/index.js
 import {
   Client,
   GatewayIntentBits,
@@ -48,14 +47,13 @@ client.on("interactionCreate", async (interaction) => {
     }
 
     try {
-      // --- THIS IS THE CRITICAL CHANGE ---
-      // We use the public Codespace URL for your Next.js app, NOT localhost.
-      const CODESPACE_API_URL =
-        "https://shadowy-owl-7v97p7qxq493r9v4-3000.app.github.dev";
+      // --- CRITICAL FIX: Use the permanent Vercel URL ---
+      const VERCEL_API_URL = "https://shuubox.vercel.app";
 
       // 1. Call your API using the public URL
       const apiResponse = await fetch(
-        `${CODESPACE_API_URL}/api/check-friendship?userA_id=${recommendingUser.id}&userB_id=${targetUser.id}`,
+        // NOTE: This call goes to your Next.js API route to check friendship status
+        `${VERCEL_API_URL}/api/check-friendship?userA_id=${recommendingUser.id}&userB_id=${targetUser.id}`,
         {
           headers: { "X-Bot-Secret": process.env.BOT_SECRET_KEY },
         }
@@ -66,7 +64,7 @@ client.on("interactionCreate", async (interaction) => {
         const errorBody = await apiResponse.text();
         console.error(`API Error: ${apiResponse.status} - ${errorBody}`);
         return interaction.editReply({
-          content: `[DEBUG ERROR] API failed with status ${apiResponse.status}. Check your Next.js terminal!`,
+          content: `[DEBUG ERROR] API failed with status ${apiResponse.status}. Check Vercel logs!`,
           ephemeral: true,
         });
       }
@@ -77,9 +75,8 @@ client.on("interactionCreate", async (interaction) => {
       // 4. Use a switch to handle every case
       switch (status) {
         case "FRIENDS":
-          // --- SUCCESS LOGIC ---
-          // UPDATED: This now points to /dashboard with a query param
-          const addUrl = `${CODESPACE_API_URL}/dashboard?add=${encodeURIComponent(
+          // --- SUCCESS LOGIC: Button links to the target user's dashboard with an 'add' query ---
+          const addUrl = `${VERCEL_API_URL}/dashboard?add=${encodeURIComponent(
             mediaName
           )}`;
           const row = new ActionRowBuilder().addComponents(
@@ -90,7 +87,7 @@ client.on("interactionCreate", async (interaction) => {
           );
 
           const embed = new EmbedBuilder()
-            .setColor("#00A3A3")
+            .setColor("#00A3A3") // Teal color for a friendly look
             .setTitle("📫 You've got a recommendation!")
             .setDescription(
               `Hey <@${targetUser.id}>, your friend <@${recommendingUser.id}> recommends you check out:`
@@ -156,4 +153,3 @@ client.on("interactionCreate", async (interaction) => {
 
 // Log the bot in
 client.login(process.env.DISCORD_BOT_TOKEN);
-
