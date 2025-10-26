@@ -1,6 +1,7 @@
 "use client";
 
 import Sidebar from "@/Components/sidebar";
+import AppHeader from "@/Components/AppHeader"; // Added consistent header
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -25,12 +26,14 @@ function CreateNewCard({
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  // Removed unused state: showSearchBar
 
   const handleSearch = async () => {
     if (!searchTerm) return;
 
     try {
       const res = await fetch(
+        // NOTE: TMDB API KEY must be correctly set in your Vercel env variables
         `https://api.themoviedb.org/3/search/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${encodeURIComponent(
           searchTerm
         )}`
@@ -54,6 +57,8 @@ function CreateNewCard({
 
   const handleAddMovie = async (movie: Movie) => {
     try {
+      // NOTE: You would typically link this to a specific list ID, 
+      // but for now, it goes to a general 'movies' collection.
       await addDoc(collection(db, "movies"), {
         title: movie.title,
         image: movie.image || null,
@@ -75,25 +80,25 @@ function CreateNewCard({
       {/* CREATE NEW CARD */}
       <div
         onClick={() => setShowSearch(true)}
-        className="bg-gray-200 rounded-2xl h-48 w-40 flex flex-col items-center justify-center p-4 cursor-pointer"
+        className="bg-gray-200 rounded-2xl h-60 w-40 flex flex-col items-center justify-center p-4 cursor-pointer hover:bg-gray-300 transition"
       >
         <span className="text-4xl font-light">+</span>
-        <span className="font-semibold">Create New</span>
+        <span className="font-semibold text-center mt-2">Add New Movie</span>
       </div>
 
       {/* SEARCH MODAL */}
       {showSearch && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white p-6 rounded-xl w-[200px] sm:w-[420px] max-h-[80vh] overflow-y-auto">
+          <div className="bg-white p-6 rounded-xl w-full sm:w-[420px] max-h-[80vh] overflow-y-auto">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-xl font-bold">Search Movies</h2>
               <button
                 type="button"
-                className="text-xl leading-none"
+                className="text-2xl leading-none"
                 onClick={() => setShowSearch(false)}
                 aria-label="Close"
               >
-                ×
+                &times;
               </button>
             </div>
 
@@ -115,7 +120,7 @@ function CreateNewCard({
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="w-full rounded-md bg-blue-600 py-2 text-white"
+                  className="w-full rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 transition"
                 >
                   Search
                 </button>
@@ -123,27 +128,33 @@ function CreateNewCard({
             </form>
 
             {/* RESULTS */}
-            <div className="mt-4 max-h-64 space-y-2 overflow-y-auto">
-              {searchResults.map((movie) => (
-                <button
-                  key={movie.tmdbId}
-                  className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-gray-100"
-                  onClick={() => handleAddMovie(movie)}
-                >
-                  {movie.image ? (
-                    <img
-                      src={movie.image}
-                      alt={movie.title}
-                      className="h-16 w-12 object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-16 w-12 items-center justify-center rounded bg-gray-200 text-gray-500">
-                      ?
-                    </div>
-                  )}
-                  <span className="truncate">{movie.title}</span>
-                </button>
-              ))}
+            <div className="mt-4 max-h-64 space-y-2 overflow-y-auto border-t pt-4">
+              {searchResults.length > 0 ? (
+                searchResults.map((movie) => (
+                  <button
+                    key={movie.tmdbId}
+                    className="flex w-full items-center gap-4 rounded-md p-2 text-left hover:bg-gray-100 transition"
+                    onClick={() => handleAddMovie(movie)}
+                  >
+                    {movie.image ? (
+                      <img
+                        src={movie.image}
+                        alt={movie.title}
+                        className="h-14 w-10 flex-shrink-0 rounded-sm object-cover"
+                      />
+                    ) : (
+                      <div className="h-14 w-10 flex-shrink-0 rounded-sm bg-gray-200 text-gray-500 flex items-center justify-center">
+                        ?
+                      </div>
+                    )}
+                    <span className="font-medium truncate">{movie.title}</span>
+                  </button>
+                ))
+              ) : (
+                <p className="text-gray-500 text-center">
+                  {searchTerm ? "No results found." : "Start typing to search for a movie."}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -183,45 +194,53 @@ export default function MoviesPage() {
       {
         id: Date.now(),
         title: m.title,
-        image: m.image ?? "", // empty string is safe for <img src>, or swap in a placeholder
+        image: m.image ?? "/placeholder.png", // Use a placeholder if image is missing
       },
     ]);
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-[#FFFAFA]">
       <Sidebar />
-      <main className="flex-1 bg-white p-10">
-        {/* Header */}
-        <header className="mb-10 flex items-center justify-between">
-          <h2 className="text-3xl text-gray-400">Movies</h2>
-          <div className="flex items-center space-x-4">
-            <span className="h-10 w-10 rounded-full bg-gray-300" />
-            <h3 className="text-2xl">Your favorite films.</h3>
-          </div>
-          <div className="h-10 w-10 rounded-full bg-gray-300" />
-        </header>
-
-        {/* Grid of movie cards */}
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {movies.map((movie) => (
-            <div
-              key={movie.id}
-              className="w-40 overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg"
-            >
-              <img
-                src={movie.image || "/placeholder.png"}
-                alt={movie.title}
-                className="h-60 w-40 object-cover"
-              />
-              <div className="p-3">
-                <h2 className="line-clamp-2 text-lg font-semibold">
-                  {movie.title}
-                </h2>
-              </div>
+      <main className="flex-1 p-10">
+        <AppHeader /> {/* Moved AppHeader to be outside the main flex area for full width */}
+        
+        <div className="mt-20"> {/* Add margin to push content below the fixed header */}
+          {/* Header */}
+          <header className="mb-10 flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-gray-800">Movies List</h2>
+            <div className="flex items-center space-x-4">
+              {/* This needs to be a clickable link to /create-list */}
+              <button 
+                className="font-semibold text-[#3CB7AE] hover:underline"
+                onClick={() => window.location.href = "/create-list"}
+              >
+                + Create New List
+              </button>
             </div>
-          ))}
-          <CreateNewCard onAddMovie={addMovie} />
+          </header>
+
+          {/* Grid of movie cards */}
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+            <CreateNewCard onAddMovie={addMovie} />
+            {movies.map((movie) => (
+              <div
+                key={movie.id}
+                className="w-40 overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg"
+              >
+                <img
+                  src={movie.image || "/placeholder.png"}
+                  alt={movie.title}
+                  className="h-60 w-40 object-cover"
+                />
+                <div className="p-3">
+                  <h2 className="line-clamp-2 text-lg font-semibold">
+                    {movie.title}
+                  </h2>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     </div>
