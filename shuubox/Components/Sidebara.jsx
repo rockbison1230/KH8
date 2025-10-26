@@ -1,7 +1,7 @@
 import React from 'react'
 import { BsDiscord,BsPersonFill, BsHouseDoorFill, BsBarChartFill, BsPeopleFill, BsPeaceFill } from "react-icons/bs"
 
-const Sidebar = () => {
+const Sidebars = () => {
   return (
     <div className='bg-[#5DE4DA] rounded-2xl fixed left-[-1%]  top-0 w-[20%] h-full border-4 inline-block align-middle'>
         <h1 className='mt-5 mb-8 text-3xl pl-5'>Shuubox</h1>
@@ -18,4 +18,4 @@ const Sidebar = () => {
 }
 //hover:left-[-1%] left-[-13%] ,
 
-export default Sidebar
+export default Sidebars

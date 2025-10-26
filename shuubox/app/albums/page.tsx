@@ -1,5 +1,5 @@
 // app/albums/page.jsx
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/Components/sidebar";
 
 export default function AlbumsPage() {
   // Example static data

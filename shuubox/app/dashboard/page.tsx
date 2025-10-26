@@ -1,11 +1,11 @@
 "use client";
 
-import AuthGate from "@/components/AuthGate";
+import AuthGate from "@/Components/AuthGate";
 import { auth } from "@/lib/firebase";
 import { signOut, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/Components/sidebar";
 
 // A simple hook to get the current user (you can move this to its own file later)
 function useUser() {
