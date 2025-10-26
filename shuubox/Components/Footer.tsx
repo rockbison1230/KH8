@@ -1,12 +1,23 @@
-import React from 'react'
+import React from 'react';
+import Link from 'next/link';
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <div className='flex justify-between items-center p-4 bg-[#7E7E7E] text-2xl'>
-        <p>Shuubox</p>
-        <p>Built with ❤️ at KnightHacks 2025.</p>
-        </div>
-  )
-}
+    <footer className="w-full bg-black text-white">
 
-export default Footer
+      <div className="flex justify-between items-center p-6">
+        
+        <Link href="/">
+          <div className="text-3xl font-extrabold">
+            Shuubox
+          </div>
+        </Link>
+
+        <div className="text-lg">
+          Built with ♡ at KnightHacks 2025
+        </div>
+
+      </div>
+    </footer>
+  );
+}

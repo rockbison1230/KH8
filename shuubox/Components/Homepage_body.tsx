@@ -1,7 +1,6 @@
 // Components/Homepage_body.tsx
 import React from 'react';
 import Link from 'next/link';
-import { Bot } from 'lucide-react'; 
 
 // Import your custom Shuubot icon if it's an SVG component
 // import ShuubotIcon from '@/Icons/shuubot.svg'; 
@@ -59,13 +58,20 @@ const Homepage_body = () => {
             Meet Shuubot
           </h2>
           <div className='mt-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
-            {/* ... (Shuubot Icon) ... */}
-            <div className='flex justify-center md:justify-start'>
-              <div className='bg-gradient-to-br from-[#FFEBF0] to-[#C7C6FF] rounded-full w-64 h-64 flex items-center justify-center p-4 shadow-lg'>
-                 <Bot className='w-40 h-40 text-[#000000]' />
-              </div>
+           <div className='flex justify-center md:justify-start'>
+            <div >
+              
+              {/* === THIS IS THE FIX === */}
+              {/* Replace the <Bot> component with this <img> tag */}
+              <img
+                src="/ShuubotIcon.svg" // This path works because it's in the 'public' folder
+                alt="Shuubot mascot"
+                className="w-40 h-40" // Adjusted size to fit the circle
+              />
+              {/* ======================= */}
+
             </div>
-            {/* ... (Text Content) ... */}
+          </div>
             <div className='text-[#000000] md:pl-12'>
               <p className='text-lg md:text-xl'>
                 Meet Shuubot — your friendly companion on Discord! Track your
@@ -75,10 +81,9 @@ const Homepage_body = () => {
               </p>
             </div>
           </div>
-          {/* ... (Button) ... */}
           <div className='text-center mt-20'>
             <Link 
-              href="YOUR_DISCORD_INVITE_LINK_HERE" 
+              href="https://discord.com/oauth2/authorize?client_id=1431510586751062058" 
               className='inline-block bg-[#C3FFAF] text-[#000000] font-semibold py-4 px-12 rounded-full text-lg shadow-md hover:bg-opacity-90 transition-all'
             >
               Get Shuubot

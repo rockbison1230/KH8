@@ -1,163 +1,89 @@
-'use client';
-import React, { useState } from 'react';
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import Link from "next/link"; 
+"use client";
 
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, functions } from "@/lib/firebase";
-import { httpsCallable } from "firebase/functions";
-import { ensureUserDoc } from "@/lib/ensureUserDoc";
+import { useState } from "react";
+import Link from "next/link";
+import AppHeader from "@/Components/AppHeader";
 
-export default function SignUp() {
-  const [showEmailForm, setShowEmailForm] = useState(false);
-  const router = useRouter();
-
+export default function SignUpPage() {
   const [authing, setAuthing] = useState(false);
   const [error, setError] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleEmailClick = () => setShowEmailForm(true);
-  const handleClose = () => {
-    setShowEmailForm(false);
-    setError(""); 
-  };
+  function makeState(): string {
+    const arr = new Uint32Array(4);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, n => n.toString(36)).join("");
+  }
 
-  const getDiscordLink = httpsCallable(functions, "getDiscordAuthURL");
+  function buildDiscordAuthorizeURL(state: string) {
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+    if (!clientId) throw new Error("Missing NEXT_PUBLIC_DISCORD_CLIENT_ID");
 
-  const handleDiscordSignup = async () => {
-    setAuthing(true);
-    setError("");
+    const redirectUri =
+      process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI
+      || "https://discordoauthredirect-zdqm753jtq-uc.a.run.app"; // your run.app URL
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: "code",
+      scope: "identify email",
+      state,
+    });
+
+    return `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+  }
+
+  async function handleDiscordSignup() {
     try {
-      const randomString = Math.random().toString(36).substring(2, 15);
-      window.sessionStorage.setItem("oauth_state", randomString);
-      const result: any = await getDiscordLink({ state: randomString });
-      const discordAuthUrl = result.data.url;
-      window.location.href = discordAuthUrl;
+      setError("");
+      setAuthing(true);
+
+      const state = makeState();
+      sessionStorage.setItem("oauth_state", state);
+
+      const url = buildDiscordAuthorizeURL(state);
+      console.log("[OAuth] authorize URL", url);
+      window.location.href = url;
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to start Discord signup.");
+      setError(err?.message || "Failed to start Discord signup.");
       setAuthing(false);
     }
-  };
-
-  const handleEmailSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthing(true);
-    setError("");
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
-      await updateProfile(userCredential.user, { displayName: name });
-      
-      await ensureUserDoc(userCredential.user);
-      
-      router.push("/dashboard");
-
-    } catch (err: any) {
-      console.error(err);
-      setError("Failed to create account. (Is the password 6+ characters?)");
-    } finally {
-      setAuthing(false);
-    }
-  };
+  }
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="absolute top-3 left-3 flex items-center space-x-2">
-        <Image
-          src="/shuubox.svg"
-          alt="My Logo"
-          width={250} 
-          height={100} 
-          className=""
-        />
-      </div>
+    <div className="flex flex-col min-h-screen bg-[#FFFAFA]">
+      <AppHeader />
 
-      <div className="bg-white p-8 rounded-xl shadow-md text-center w-full max-w-sm">
-        <h1 className="text-2xl font-semibold mb-6 text-black">Sign up!</h1>
-        <button 
-          onClick={handleEmailClick}
-          className="w-full bg-blue-600 text-white py-2 rounded-md mb-4 hover:bg-blue-700 transition-colors"
-          disabled={authing}
-        >
-          Continue with Email
-        </button> 
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-5xl font-extrabold text-[#231F20] mb-12">Sign Up</h1>
 
-        <button
-          onClick={handleDiscordSignup} 
-          className="w-full bg-[#5865F2] text-white py-2 rounded-md hover:bg-[#4752C4] transition-colors"
-          disabled={authing}
-        >
-          {authing ? "Working..." : "Continue with Discord"}
-        </button>
+        <div className="flex flex-col gap-5 w-full max-w-sm">
+          <Link
+            href="/signup/email"
+            className="flex items-center justify-center w-full font-semibold text-lg text-black bg-[#FFEBFF] border-2 border-black rounded-full py-4 px-10 transition-all hover:shadow-md hover:scale-105"
+          >
+            Continue With Email
+          </Link>
 
-        <p className="mt-6 text-gray-600">
+          <button
+            onClick={handleDiscordSignup}
+            disabled={authing}
+            className="flex items-center justify-center w-full font-semibold text-lg text-black bg-[#C7C6FF] border-2 border-black rounded-full py-4 px-10 transition-all hover:shadow-md hover:scale-105 disabled:opacity-50"
+          >
+            {authing ? "Redirecting..." : "Continue With Discord"}
+          </button>
+        </div>
+
+        {error && <p className="text-red-600 text-sm text-center mt-4">{error}</p>}
+
+        <p className="text-lg text-black mt-12">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 font-medium hover:underline">
-            Login
+          <Link href="/login" className="font-bold text-[#3CB7AE] hover:underline">
+            Log In
           </Link>
         </p>
-
-        {showEmailForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm relative">
-              <button
-                onClick={handleClose}
-                className="absolute top-2 right-3 text-gray-500 hover:text-gray-700 text-xl"
-              >
-                ×
-              </button>
-              <h2 className="text-xl font-semibold mb-4 text-center text-black">
-                Sign up with email
-              </h2>
-              <form
-                onSubmit={handleEmailSignup}
-                className="space-y-4"
-              >
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Full name"
-                  required
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)} 
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email address"
-                  required
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Password (6+ characters)"
-                  required
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                />
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
-                  disabled={authing}
-                >
-                  {authing ? "Creating..." : "Create Account"}
-                </button>
-                {error && <p className="text-red-600 text-sm">{error}</p>}
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

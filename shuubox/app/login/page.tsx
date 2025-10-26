@@ -1,114 +1,88 @@
-// app/login/page.tsx
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, functions } from "@/lib/firebase"; // Import functions
-import { httpsCallable } from "firebase/functions"; // Import httpsCallable
-import { ensureUserDoc } from "@/lib/ensureUserDoc";
+import AppHeader from "@/Components/AppHeader";
 
 export default function LoginPage() {
-   const router = useRouter();
-   const [authing, setAuthing] = useState(false);
-   const [email, setEmail] = useState("");
-   const [password, setPassword] = useState("");
-   const [error, setError] = useState("");
+  const [authing, setAuthing] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setAuthing(true);
-    setError("");
+  function makeState(): string {
+    const arr = new Uint32Array(4);
+    crypto.getRandomValues(arr);
+    return Array.from(arr, n => n.toString(36)).join("");
+  }
 
+  function buildDiscordAuthorizeURL(state: string) {
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+    if (!clientId) throw new Error("Missing NEXT_PUBLIC_DISCORD_CLIENT_ID");
+
+    const redirectUri =
+      process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI
+      || "https://discordoauthredirect-zdqm753jtq-uc.a.run.app"; // your run.app URL
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: "code",
+      scope: "identify email",
+      state,
+    });
+
+    return `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+  }
+
+  async function handleDiscordLogin() {
     try {
-        // 1. Sign in the user
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        
-        // 2. Create their database profile (this is the new line)
-        await ensureUserDoc(userCredential.user);
+      setError("");
+      setAuthing(true);
 
-        // 3. Send them to the homepage
-        router.push("/");
+      const state = makeState();
+      sessionStorage.setItem("oauth_state", state);
 
-    } catch(error:any) {
-        setError("Incorrect email or password.");
-    } finally {
-        setAuthing(false);
-    }
-   };
-   
-
-   // --- Discord Login Handler ---
-   const getDiscordLink = httpsCallable(functions, "getDiscordAuthURL");
-
-   const handleDiscordLogin = async () => {
-    setAuthing(true);
-    setError("");
-    
-    try {
-      const randomString = Math.random().toString(36).substring(2, 15);
-      window.sessionStorage.setItem("oauth_state", randomString);
-      const result: any = await getDiscordLink({ state: randomString });
-      const discordAuthUrl = result.data.url;
-      window.location.href = discordAuthUrl;
+      const url = buildDiscordAuthorizeURL(state);
+      console.log("[OAuth] authorize URL", url);
+      window.location.href = url;
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to start Discord login.");
+      setError(err?.message || "Failed to start Discord login.");
       setAuthing(false);
     }
-   };
+  }
 
-   // --- JSX for the Page ---
-   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <form 
-            onSubmit={handleLogin} 
-            className="bg-white p-8 rounded-lg shadow-md w-full max-w-md flex flex-col gap-4"
-        >
-            <h1 className="text-3xl font-bold text-center mb-4">Login</h1>
-            
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            
-            <button 
-                type="submit" 
-                disabled={authing} 
-                className="w-full bg-blue-600 text-white py-2 rounded-md font-bold cursor-pointer hover:bg-blue-700 disabled:bg-gray-400"
-            >
-                {authing ? "Logging in..." : "Login"}
-            </button>
+  return (
+    <div className="flex flex-col min-h-screen bg-[#FFFAFA]">
+      <AppHeader />
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4">
+        <h1 className="text-5xl font-extrabold text-[#231F20] mb-12">Log In</h1>
 
-            <button 
-                type="button"
-                onClick={handleDiscordLogin}
-                disabled={authing}
-                className="w-full bg-[#5865F2] text-white py-2 rounded-md font-bold cursor-pointer hover:bg-[#4a54c4] disabled:bg-gray-400"
-            >
-                Login with Discord
-            </button>
+        <div className="flex flex-col gap-5 w-full max-w-sm">
+          <Link
+            href="/login/email"
+            className="flex items-center justify-center w-full font-semibold text-lg text-black bg-[#FFEBFF] border-2 border-black rounded-full py-4 px-10 transition-all hover:shadow-md hover:scale-105"
+          >
+            Continue With Email
+          </Link>
 
-            {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-            
-            <Link href="/signup" className="text-center mt-2 text-blue-600 hover:underline">
-                Don't have an account? Sign Up
-            </Link>
-        </form>
+          <button
+            onClick={handleDiscordLogin}
+            disabled={authing}
+            className="flex items-center justify-center w-full font-semibold text-lg text-black bg-[#C7C6FF] border-2 border-black rounded-full py-4 px-10 transition-all hover:shadow-md hover:scale-105 disabled:opacity-50"
+          >
+            {authing ? "Redirecting..." : "Continue With Discord"}
+          </button>
+        </div>
+
+        {error && <p className="text-red-600 text-sm text-center mt-4">{error}</p>}
+
+        <p className="text-lg text-black mt-12">
+          Don't have an account?{" "}
+          <Link href="/signup" className="font-bold text-[#3CB7AE] hover:underline">
+            Sign Up
+          </Link>
+        </p>
+      </main>
     </div>
-   );
+  );
 }

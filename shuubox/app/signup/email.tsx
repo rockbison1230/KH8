@@ -7,7 +7,7 @@ export default function EmailSignUpForm() {
         password: "",
     })
 
-    const handleChange = (e) => {  
+    const handleChange = (e: { target: { name: any; value: any; }; }) => {  
         const { name, value } = e.target;
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -15,7 +15,7 @@ export default function EmailSignUpForm() {
         }));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault(); 
         console.log(formData);
 
