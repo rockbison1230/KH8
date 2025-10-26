@@ -92,7 +92,8 @@ const Profilepage = () => {
         <div className="flex items-center gap-x-5 mb-6">
             <div className="flex items-center gap-x-5 mb-6">
                 <img src={"ShuubotIcon.svg"} alt="Shuubot" className="w-12 h-12" />
-                <p className="text-4xl font-semibold">{data.username}</p>
+                {/* <p className="text-4xl font-semibold">{data.username}</p> */}
+                <p className="text-4xl font-semibold">Your profile</p>
                 <img className="w-10 h-10" src={"friend.svg"} alt="Copy" />
             </div>
 
