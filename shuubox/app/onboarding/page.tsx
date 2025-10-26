@@ -21,10 +21,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 // ---------------------------------
 
-// --- Header (matches your design) ---
-function OnboardingHeader() {
+// --- AppHeader (Placeholder based on your design) ---
+function AppHeader() {
   return (
-    <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center">
+    // UPDATED: Matched background to page
+    <header className="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center bg-gray-50">
       <span className="font-bold text-lg">Shuubox</span>
       <span className="font-mono text-sm">~ s ~</span>
     </header>
@@ -80,17 +81,19 @@ export default function OnboardingPage() {
   };
 
   return (
-    // UPDATED: Set background color to bg-white as #FFFAFA may not be loading
-    <div className="flex flex-col min-h-screen items-center justify-center bg-white p-4">
-      <OnboardingHeader />
+    // UPDATED: Set background color to bg-gray-50 (to match Figma's #FFFAFA)
+    <div className="flex flex-col min-h-screen items-center justify-center bg-gray-50 p-4 pt-16">
+      <AppHeader />
 
       <main className="w-full max-w-md">
         {/* UPDATED: Styling for title */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-[#231F20] mb-2">
+          {/* UPDATED: text-4xl -> text-3xl */}
+          <h1 className="text-3xl font-extrabold text-[#231F20] mb-2">
             Let's begin
           </h1>
-          <p className="text-lg text-gray-700">Discover. Track. Connect.</p>
+          {/* UPDATED: text-lg -> text-base */}
+          <p className="text-base text-gray-700">Discover. Track. Connect.</p>
         </div>
 
         {/* Form Section */}
@@ -103,29 +106,30 @@ export default function OnboardingPage() {
             >
               Display Name
             </label>
-            {/* UPDATED: Styling for input */}
+            {/* UPDATED: text-lg -> text-base, added placeholder color */}
             <input
               id="displayName"
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Anime Watcher"
-              className="w-full text-lg border-2 border-black rounded-2xl py-3 px-5 bg-transparent focus:ring-2 focus:ring-cyan-300 focus:outline-none"
+              className="w-full text-base border-2 border-black rounded-2xl py-3 px-5 bg-transparent focus:ring-2 focus:ring-teal-300 focus:outline-none placeholder:text-gray-400"
             />
           </div>
 
           {/* Avatar Section (Styled to match) */}
           <div className="flex items-center space-x-4">
-            {/* UPDATED: Styled placeholder '?' icon */}
+            {/* UPDATED: Styled placeholder '?' icon, text-4xl -> text-3xl */}
             <div className="flex items-center justify-center w-20 h-20 rounded-full border-2 border-black">
-              <span className="text-4xl font-semibold text-gray-400">?</span>
+              <span className="text-3xl font-semibold text-gray-400">?</span>
             </div>
-            {/* UPDATED: Styled button */}
-            <button className="px-6 py-2 border-2 border-black rounded-xl text-black font-semibold bg-white">
+            {/* UPDATED: Styled button, text-base */}
+            <button className="px-6 py-2 border-2 border-black rounded-xl text-black font-semibold bg-white text-base">
               Upload Avatar
             </button>
           </div>
 
+          {/* Introduction */}
           <div className="text-left">
             <label
               className="block text-sm font-semibold mb-2"
@@ -133,29 +137,33 @@ export default function OnboardingPage() {
             >
               Introduce Yourself!
             </label>
+            {/* UPDATED: text-lg -> text-base, added placeholder color */}
             <textarea
               id="introduction"
               value={introduction}
               onChange={(e) => setIntroduction(e.target.value)}
               placeholder="I like to watch ... (max 200 characters)"
               maxLength={200}
-              className="w-full text-lg border-2 border-black rounded-2xl py-3 px-5 h-28 resize-none bg-transparent focus:ring-2 focus:ring-cyan-300 focus:outline-none"
+              className="w-full text-base border-2 border-black rounded-2xl py-3 px-5 h-28 resize-none bg-transparent focus:ring-2 focus:ring-teal-300 focus:outline-none placeholder:text-gray-400"
             />
           </div>
 
           {error && <p className="text-red-600 text-sm text-center">{error}</p>}
 
+          {/* Action Buttons */}
           <div className="flex gap-4 pt-4">
+            {/* UPDATED: "back" button styling, text-lg -> text-base */}
             <button
               onClick={() => (window.location.href = "/login")} // Go "back" to login
-              className="flex-1 font-semibold text-lg border-2 border-black bg-white text-black rounded-xl py-3 transition-all hover:bg-gray-100"
+              className="flex-1 font-semibold text-base border-2 border-black bg-white text-black rounded-xl py-3 transition-all hover:bg-gray-100"
             >
               back
             </button>
+            {/* UPDATED: "done" button styling, text-lg -> text-base, bg-cyan-300 -> bg-teal-300 */}
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="flex-1 font-semibold text-lg border-2 border-black bg-cyan-300 text-black rounded-xl py-3 transition-all hover:bg-cyan-400 disabled:opacity-50"
+              className="flex-1 font-semibold text-base border-2 border-black bg-teal-300 text-black rounded-xl py-3 transition-all hover:bg-teal-400 disabled:opacity-50"
             >
               {isLoading ? "Saving..." : "done"}
             </button>
