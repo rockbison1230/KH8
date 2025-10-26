@@ -1,10 +1,35 @@
 "use client";
 
 import Sidebar from "@/Components/sidebar";
-import AppHeader from "@/Components/AppHeader"; // Added consistent header
-import { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import AppHeader from "@/Components/AppHeader";
+import { useState, useEffect } from "react";
+import { collection, addDoc, onSnapshot, query, where } from "firebase/firestore"; // Added query and where
+import { db, auth } from "@/lib/firebase"; // Import auth for userId
+import { User } from "firebase/auth"; // Import User type
+
+// Helper function to read URL query parameters
+function useURLQueryParam(paramName: string): string | null {
+  const [value, setValue] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      setValue(params.get(paramName));
+    }
+  }, [paramName]);
+  return value;
+}
+
+// Helper to get current user ID
+function useUserId(): string | null {
+  const [userId, setUserId] = useState<string | null>(null);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUserId(user ? user.uid : null);
+    });
+    return () => unsubscribe();
+  }, []);
+  return userId;
+}
 
 type Movie = {
   title: string;
@@ -13,27 +38,64 @@ type Movie = {
 };
 
 type StateMovie = {
-  id: number;
+  id: string; // Changed to string for Firestore document ID
   title: string;
-  image: string; // required for rendering
+  image: string;
+  tmdbId: number; // Added tmdbId for consistency
 };
+
+// Hook to fetch items from the current list
+function useListItems(userId: string | null, listId: string | null): StateMovie[] {
+  const [items, setItems] = useState<StateMovie[]>([]);
+
+  useEffect(() => {
+    if (!userId || !listId) {
+      setItems([]);
+      return;
+    }
+
+    // Path: users/{userId}/lists/{listId}/items
+    const itemsColRef = collection(db, "users", userId, "lists", listId, "items");
+    
+    // Listen for real-time changes to the items in the specific list
+    const unsubscribe = onSnapshot(itemsColRef, (snapshot) => {
+      const fetchedItems: StateMovie[] = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id, // Firestore Document ID
+          title: data.title,
+          image: data.image || "/placeholder.png",
+          tmdbId: data.tmdbId,
+        };
+      });
+      setItems(fetchedItems);
+    });
+
+    return () => unsubscribe();
+  }, [userId, listId]);
+
+  return items;
+}
+
 
 function CreateNewCard({
   onAddMovie,
+  listId,
+  userId, // <-- User ID added
 }: {
   onAddMovie: (movie: Movie) => void;
+  listId: string | null;
+  userId: string | null; // <-- User ID required for path
 }) {
   const [searchResults, setSearchResults] = useState<Movie[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  // Removed unused state: showSearchBar
 
   const handleSearch = async () => {
     if (!searchTerm) return;
 
     try {
       const res = await fetch(
-        // NOTE: TMDB API KEY must be correctly set in your Vercel env variables
         `https://api.themoviedb.org/3/search/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${encodeURIComponent(
           searchTerm
         )}`
@@ -56,17 +118,31 @@ function CreateNewCard({
   };
 
   const handleAddMovie = async (movie: Movie) => {
+    if (!listId || !userId) {
+        // Use a standard non-alert method to show an error
+        console.error("Cannot add movie: List ID or User ID is missing.");
+        setShowSearch(false);
+        return;
+    }
+
     try {
-      // NOTE: You would typically link this to a specific list ID, 
-      // but for now, it goes to a general 'movies' collection.
-      await addDoc(collection(db, "movies"), {
+      // 🚨 FIX: Nest the movie under the specific user list
+      const itemsColRef = collection(db, "users", userId, "lists", listId, "items");
+      
+      const docRef = await addDoc(itemsColRef, {
         title: movie.title,
         image: movie.image || null,
         tmdbId: movie.tmdbId,
         createdAt: new Date(),
       });
 
-      onAddMovie(movie); // update UI immediately
+      // Update UI immediately (add the doc ID to the temp object)
+      onAddMovie({ 
+          ...movie,
+          // Pass the new Firestore document ID back to the parent list state
+          id: docRef.id 
+      } as unknown as StateMovie); 
+      
       setShowSearch(false);
       setSearchResults([]);
       setSearchTerm("");
@@ -74,6 +150,11 @@ function CreateNewCard({
       console.error("Error adding movie: ", error);
     }
   };
+
+  if (!listId) {
+      // Don't show the card if we don't know which list to add to.
+      return <div className="text-gray-500 p-4">Select a list from your dashboard.</div>;
+  }
 
   return (
     <div>
@@ -86,7 +167,7 @@ function CreateNewCard({
         <span className="font-semibold text-center mt-2">Add New Movie</span>
       </div>
 
-      {/* SEARCH MODAL */}
+      {/* SEARCH MODAL (rest of modal logic remains the same) */}
       {showSearch && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-xl w-full sm:w-[420px] max-h-[80vh] overflow-y-auto">
@@ -164,38 +245,28 @@ function CreateNewCard({
 }
 
 export default function MoviesPage() {
-  const [movies, setMovies] = useState<StateMovie[]>([
-    {
-      id: 1,
-      title: "Inception",
-      image: "https://m.media-amazon.com/images/I/81p+xe8cbnL._AC_SY679_.jpg",
-    },
-    {
-      id: 2,
-      title: "Interstellar",
-      image: "https://m.media-amazon.com/images/I/71nK0iPgZtL._AC_SY679_.jpg",
-    },
-    {
-      id: 3,
-      title: "The Dark Knight",
-      image: "https://m.media-amazon.com/images/I/51k0qa6qHPL._AC_SY679_.jpg",
-    },
-    {
-      id: 4,
-      title: "Dune: Part Two",
-      image: "https://m.media-amazon.com/images/I/91dSMhdIzTL._AC_SY679_.jpg",
-    },
-  ]);
+  // 🚨 FIX: Read the listId from the URL query parameters
+  const listId = useURLQueryParam("listId");
+  const userId = useUserId(); // Get the current authenticated user's ID
+  
+  // 🚨 FIX: Fetch the actual movies from the specific list ID
+  const fetchedMovies = useListItems(userId, listId);
+  
+  // State for immediate UI updates (used after adding a new item)
+  const [movies, setMovies] = useState<StateMovie[]>([]);
 
-  // Convert Movie -> StateMovie to satisfy the list type
-  const addMovie = (m: Movie) => {
+  // Sync the local state with the real-time database data
+  useEffect(() => {
+      setMovies(fetchedMovies);
+  }, [fetchedMovies]);
+
+  // Function called by the search card to update UI immediately
+  const addMovie = (m: StateMovie) => {
+    // Since the useListItems hook is active, it will soon update fetchedMovies.
+    // We update the state optimistically here to make the UI instant.
     setMovies((prev) => [
       ...prev,
-      {
-        id: Date.now(),
-        title: m.title,
-        image: m.image ?? "/placeholder.png", // Use a placeholder if image is missing
-      },
+      m,
     ]);
   };
 
@@ -203,14 +274,15 @@ export default function MoviesPage() {
     <div className="flex min-h-screen bg-[#FFFAFA]">
       <Sidebar />
       <main className="flex-1 p-10">
-        <AppHeader /> {/* Moved AppHeader to be outside the main flex area for full width */}
+        <AppHeader />
         
-        <div className="mt-20"> {/* Add margin to push content below the fixed header */}
-          {/* Header */}
+        <div className="mt-20">
+          {/* Main List Controls and Title */}
           <header className="mb-10 flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-gray-800">Movies List</h2>
+            <h2 className="text-3xl font-bold text-gray-800">
+              {listId ? `List: ${listId.substring(0, 8)}...` : "Select a List"}
+            </h2>
             <div className="flex items-center space-x-4">
-              {/* This needs to be a clickable link to /create-list */}
               <button 
                 className="font-semibold text-[#3CB7AE] hover:underline"
                 onClick={() => window.location.href = "/create-list"}
@@ -222,7 +294,11 @@ export default function MoviesPage() {
 
           {/* Grid of movie cards */}
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-            <CreateNewCard onAddMovie={addMovie} />
+            
+            {/* 🚨 FIX: Pass the listId and userId down to the CreateNewCard component */}
+            <CreateNewCard onAddMovie={addMovie} listId={listId} userId={userId} />
+            
+            {/* 🚨 FIX: Map over the state that is synced with the database */}
             {movies.map((movie) => (
               <div
                 key={movie.id}
@@ -240,6 +316,19 @@ export default function MoviesPage() {
                 </div>
               </div>
             ))}
+            
+            {movies.length === 0 && listId && (
+                <div className="col-span-full p-6 text-center text-gray-500">
+                    Your list is empty. Start by clicking "Add New Movie"!
+                </div>
+            )}
+            
+            {/* Show message if no list is selected */}
+            {!listId && (
+                <div className="col-span-full p-6 text-center text-gray-700 font-semibold">
+                    Please select a list from your Dashboard to view items.
+                </div>
+            )}
           </div>
         </div>
       </main>
