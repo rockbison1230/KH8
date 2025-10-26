@@ -26,12 +26,14 @@ import Link from "next/link";
 type ListCardProps = {
   title: string;
   href?: string; // optional link
+  icon: string; // icon name
 };
 
-function ListCard({ title, href }: ListCardProps) {
+function ListCard({ title, href, icon }: ListCardProps) {
   const content = (
-    <div className="bg-gray-200 rounded-2xl h-48 w-40 flex items-end justify-center p-4 hover:bg-gray-300 transition">
-      <span className="font-semibold">{title}</span>
+    <div className="bg-white rounded-4xl p-10 h-30 justify-between w-full flex items-center gap-4 p-4 border-2 hover:bg-gray-300 transition">
+      <img src={`/${icon}.svg`} alt="list icon" className="w-6 h-6" />
+      <span className="text-2xl">{title}</span>
     </div>
   );
 
@@ -40,14 +42,16 @@ function ListCard({ title, href }: ListCardProps) {
 }
 
 
-// function CreateNewCard() {
-//   return (
-//     <div className="bg-gray-200 rounded-2xl h-48 w-40 flex flex-col items-center justify-center p-4">
-//       <span className="text-4xl font-light">+</span>
-//       <span className="font-semibold">Create New</span>
-//     </div>
-//   );
-// }
+function CreateNewCard({ href }: { href: string }) {
+  const card = (
+    <div className="bg-white rounded-4xl p-10 h-30 justify-between w-full flex items-center gap-4 p-4 border-2 hover:bg-gray-300 transition">
+      <span className="text-4xl font-light">+</span>
+      <span className="text-2xl">Create New</span>
+    </div>
+    );
+    // If href is provided, make the whole card clickable
+    return href ? <Link href={href}>{card}</Link> : card;
+}
 
 export default function DashboardPage() {
   const user = useUser();
@@ -59,25 +63,23 @@ export default function DashboardPage() {
         <main className="flex-1 p-10 bg-white">
           {/* Header section */}
           <header className="flex justify-between items-center mb-10">
-            <h2 className="text-3xl text-gray-400">Dashboard</h2>
             <div className="flex items-center space-x-4">
-              <span className="w-10 h-10 bg-gray-300 rounded-full"></span>
-              <h3 className="text-2xl">
-                Welcome back, {user?.displayName || user?.email?.split('@')[0] || "User"}
-              </h3>
+              {/* <span className="w-10 h-10 bg-gray-300 rounded-full"></span> */}
+              <img src={"Shuubot.svg"} alt="heart icon" className="w-15 h-15" />
+              <h3 className="text-3xl font-semibold p-4">  {user?.displayName || user?.email?.split('@')[0] || "User"}'s Lists</h3>
+
             </div>
             <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
           </header>
 
           <div>
-            <h3 className="text-2xl font-semibold mb-6">Your Lists</h3>
-            <div className="grid grid-cols-4 gap-6">
-              <ListCard title="Movies" href="/movies" />
-              <ListCard title="Albums" href="/albums"/>
-              <ListCard title="Shows" href="/shows"/>
-              <ListCard title="Games" href="/games"/>
-              <ListCard title="Books" href="/books"/>
-              {/* <CreateNewCard /> */}
+            <div className="grid gap-6">
+              <ListCard title="Movies" href="/movies" icon="heart"/>
+              <ListCard title="Albums" href="/albums" icon="music"/>
+              <ListCard title="Shows" href="/shows" icon="animation"/>
+              {/* <ListCard title="Games" href="/games" icon="game"/>
+              <ListCard title="Books" href="/books"/> */}
+              <CreateNewCard href="/create-list"/>
             </div>
           </div>
         </main>
