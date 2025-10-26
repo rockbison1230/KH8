@@ -248,25 +248,18 @@ function CreateNewCard({
 }
 
 export default function MoviesPage() {
-  // 🚨 FIX: Read the listId from the URL query parameters
   const listId = useURLQueryParam("listId");
-  const userId = useUserId(); // Get the current authenticated user's ID
+  const userId = useUserId();
   
-  // 🚨 FIX: Fetch the actual movies from the specific list ID
   const fetchedMovies = useListItems(userId, listId);
   
-  // State for immediate UI updates (used after adding a new item)
   const [movies, setMovies] = useState<StateMovie[]>([]);
 
-  // Sync the local state with the real-time database data
   useEffect(() => {
       setMovies(fetchedMovies);
   }, [fetchedMovies]);
 
-  // Function called by the search card to update UI immediately
   const addMovie = (m: StateMovie) => {
-    // Since the useListItems hook is active, it will soon update fetchedMovies.
-    // We update the state optimistically here to make the UI instant.
     setMovies((prev) => [
       ...prev,
       m,
@@ -276,7 +269,8 @@ export default function MoviesPage() {
   return (
     <div className="flex min-h-screen bg-[#FFFAFA]">
       <Sidebar />
-      <main className="flex-1 p-10">
+      {/* 🚨 FIX 1: Removed flex-1 from main and added margin-left to compensate for fixed Sidebar */}
+      <main className="pt-10 pb-12 px-10 pl-[14rem] w-full"> 
         <AppHeader />
         
         <div className="mt-20">
@@ -298,11 +292,8 @@ export default function MoviesPage() {
           {/* Grid of movie cards */}
           <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
             
-            {/* FIX: Pass the listId and userId down to the CreateNewCard component */}
-            {/* FIX: The onAddMovie prop now correctly accepts StateMovie */}
             <CreateNewCard onAddMovie={addMovie} listId={listId} userId={userId} />
             
-            {/* 🚨 FIX: Map over the state that is synced with the database */}
             {movies.map((movie) => (
               <div
                 key={movie.id}
