@@ -1,27 +1,31 @@
-// Components/AppHeader.tsx
-import React from 'react';
-import Link from 'next/link';
+"use client";
+
+import Link from "next/link";
+import React from "react";
 
 export default function AppHeader() {
   return (
-    <header className="w-full bg-[#FFFAFA]">
-      <nav className="flex justify-between items-center p-6">
-        
-        <Link href="/">
-          <div className="text-4xl font-extrabold text-[#231F20]">
+    <header className="fixed inset-x-0 top-0 z-50 bg-[#FFFAFA]">
+      <nav className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
+        {/* Brand at left, just like in Figma */}
+        <Link href="/" className="select-none">
+          <span className="text-2xl font-extrabold tracking-tight text-[#231F20]">
             Shuubox
-          </div>
+          </span>
         </Link>
 
-        <Link href="/profile"> 
+        {/* Tiny profile spot at right so the bar feels balanced */}
+        <Link href="/profile" aria-label="Profile">
           <img
-            src="/nakieLogo.svg" 
+            src="/nakieLogo.svg"
             alt="Shuubot mascot"
-            className="w-12 h-12"
+            className="h-8 w-8"
           />
         </Link>
-
       </nav>
+
+      {/* Hairline divider for a crisp seam between header and content */}
+      <div className="h-px w-full bg-black/10" />
     </header>
   );
 }

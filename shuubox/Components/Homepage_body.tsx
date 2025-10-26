@@ -2,13 +2,11 @@
 import React from 'react';
 import Link from 'next/link';
 
-// Import your custom Shuubot icon if it's an SVG component
 // import ShuubotIcon from '@/Icons/shuubot.svg'; 
 
 const Homepage_body = () => {
   return (
     <div className='flex flex-col items-center min-h-screen bg-[#FFFAFA]'> 
-      {/* ... (Section 1: "All your media in one place") ... */}
       <section className='w-full py-20 px-4 md:py-32 bg-[#FFFAFA] text-center'>
         <div className='max-w-4xl mx-auto'>
           <h1 className='text-4xl md:text-5xl font-extrabold text-[#000000] leading-tight'>
@@ -51,7 +49,6 @@ const Homepage_body = () => {
         </div>
       </section>
 
-      {/* Section 3: "Meet Shuubot" */}
       <section className='w-full py-20 px-4 md:py-32 bg-[#FFFAFA]'>
         <div className='max-w-6xl mx-auto'>
           <h2 className='text-4xl md:text-5xl font-extrabold text-[#000000] text-center leading-tight'>
@@ -61,14 +58,12 @@ const Homepage_body = () => {
            <div className='flex justify-center md:justify-start'>
             <div >
               
-              {/* === THIS IS THE FIX === */}
-              {/* Replace the <Bot> component with this <img> tag */}
+         
               <img
                 src="/ShuubotIcon.svg" // This path works because it's in the 'public' folder
                 alt="Shuubot mascot"
                 className="w-40 h-40" // Adjusted size to fit the circle
               />
-              {/* ======================= */}
 
             </div>
           </div>
@@ -76,8 +71,7 @@ const Homepage_body = () => {
               <p className='text-lg md:text-xl'>
                 Meet Shuubot — your friendly companion on Discord! Track your
                 stats, check off items, and show off your completion streaks
-                right from your server. A quick <code className='bg-gray-200 px-2 py-1 rounded'>!shuustats</code> is
-                all it takes to flex your media milestones.
+                right from your server. 
               </p>
             </div>
           </div>

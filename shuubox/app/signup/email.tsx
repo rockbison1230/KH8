@@ -19,7 +19,6 @@ export default function EmailSignUpForm() {
         e.preventDefault(); 
         console.log(formData);
 
-        // Send data to backend API
         const res = await fetch("/api/signup", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
