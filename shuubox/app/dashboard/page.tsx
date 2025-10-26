@@ -1,7 +1,7 @@
 "use client";
 
-import AuthGate from "@/components/AuthGate";
-import OnboardingGate from "@/components/OnboardingGate";
+import AuthGate from "@/Components/AuthGate";
+import OnboardingGate from "@/Components/OnboardingGate";
 import { auth } from "@/lib/firebase";
 import { signOut, User } from "firebase/auth";
 import { useEffect, useState } from "react";
