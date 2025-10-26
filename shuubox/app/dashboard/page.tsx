@@ -1,11 +1,11 @@
 "use client";
 
-import AuthGate from "@/components/AuthGate";
+import AuthGate from "@/Components/AuthGate";
 import { auth } from "@/lib/firebase";
 import { signOut, User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/Components/sidebar";
 
 // A simple hook to get the current user (you can move this to its own file later)
 function useUser() {
@@ -60,9 +60,9 @@ export default function DashboardPage() {
     <AuthGate>
       <div className="flex min-h-screen">
         <Sidebar />
-        <main className="flex-1 p-10 bg-white">
+        <main className="flex-1 bg-white pt-12 pb-12 px-30">
           {/* Header section */}
-          <header className="flex justify-between items-center mb-10">
+          <header className="flex justify-between items-center mb-10 p-5">
             <div className="flex items-center space-x-4">
               {/* <span className="w-10 h-10 bg-gray-300 rounded-full"></span> */}
               <img src={"Shuubot.svg"} alt="heart icon" className="w-15 h-15" />
@@ -73,9 +73,10 @@ export default function DashboardPage() {
           </header>
 
           <div>
-            <div className="grid gap-6">
+            <div className="grid gap-6 ">
               <ListCard title="Movies" href="/movies" icon="heart"/>
-              <ListCard title="Albums" href="/albums" icon="music"/>
+              <ListCard title="Books" href="/books" icon="book"/>
+              {/* <ListCard title="Music" href="/music" icon="music"/> */}
               <ListCard title="Shows" href="/shows" icon="animation"/>
               {/* <ListCard title="Games" href="/games" icon="game"/>
               <ListCard title="Books" href="/books"/> */}

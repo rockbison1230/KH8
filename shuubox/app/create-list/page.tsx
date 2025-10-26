@@ -1,7 +1,7 @@
 // app/create-list/page.tsx
 "use client";
 
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/Components/sidebar";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { collection, addDoc } from "firebase/firestore";
