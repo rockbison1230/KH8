@@ -3,9 +3,9 @@
 import Sidebar from "@/Components/sidebar";
 import AppHeader from "@/Components/AppHeader";
 import { useState, useEffect } from "react";
-import { collection, addDoc, onSnapshot, query, where } from "firebase/firestore"; // Added query and where
-import { db, auth } from "@/lib/firebase"; // Import auth for userId
-import { User } from "firebase/auth"; // Import User type
+import { collection, addDoc, onSnapshot, doc, getDoc } from "firebase/firestore"; // Added doc and getDoc
+import { db, auth } from "@/lib/firebase"; 
+import { User } from "firebase/auth"; 
 
 // Helper function to read URL query parameters
 function useURLQueryParam(paramName: string): string | null {
@@ -30,6 +30,44 @@ function useUserId(): string | null {
   }, []);
   return userId;
 }
+
+// --- NEW HOOK TO FETCH LIST TITLE ---
+function useListTitle(userId: string | null, listId: string | null): string | null {
+  const [title, setTitle] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId || !listId) {
+      setTitle(null);
+      return;
+    }
+
+    const listDocRef = doc(db, "users", userId, "lists", listId);
+
+    // Fetch the document once to get the title
+    const getListTitle = async () => {
+      try {
+        const docSnap = await getDoc(listDocRef);
+        if (docSnap.exists()) {
+          setTitle(docSnap.data().title as string);
+        } else {
+          setTitle("List Not Found");
+        }
+      } catch (error) {
+        console.error("Error fetching list title:", error);
+        setTitle("Error Loading Title");
+      }
+    };
+    
+    // NOTE: Using onSnapshot here would be better for real-time changes
+    // but getDoc is simpler for a static title lookup in a demo.
+    getListTitle(); 
+
+  }, [userId, listId]);
+
+  return title;
+}
+// ------------------------------------
+
 
 type Movie = {
   title: string;
@@ -97,7 +135,7 @@ function CreateNewCard({
 
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&query=${encodeURIComponent(
+        `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&query=${encodeURIComponent(
           searchTerm
         )}`
       );
@@ -251,6 +289,9 @@ export default function MoviesPage() {
   const listId = useURLQueryParam("listId");
   const userId = useUserId();
   
+  // 🚨 NEW: Fetch the list title
+  const listTitle = useListTitle(userId, listId);
+
   const fetchedMovies = useListItems(userId, listId);
   
   const [movies, setMovies] = useState<StateMovie[]>([]);
@@ -266,6 +307,16 @@ export default function MoviesPage() {
     ]);
   };
 
+  // Determine the display title
+  const displayTitle = listId 
+    ? listTitle === null 
+      ? "Loading List..." // Show loading state
+      : listTitle === "List Not Found" 
+        ? "List Not Found" // Show not found state
+        : listTitle // Show the actual title
+    : "Select a List"; // Default when no listId is in URL
+
+
   return (
     <div className="flex min-h-screen bg-[#FFFAFA]">
       <Sidebar />
@@ -277,7 +328,7 @@ export default function MoviesPage() {
           {/* Main List Controls and Title */}
           <header className="mb-10 flex items-center justify-between">
             <h2 className="text-3xl font-bold text-gray-800">
-              {listId ? `List: ${listId.substring(0, 8)}...` : "Select a List"}
+              {displayTitle} {/* 🚨 FIX: Use the human-readable title */}
             </h2>
             <div className="flex items-center space-x-4">
               <button 
