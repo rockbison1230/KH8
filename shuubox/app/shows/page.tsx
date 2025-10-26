@@ -1,8 +1,6 @@
-// app/movies/page.jsx
 import Sidebar from "@/Components/sidebar";
 
 export default function ShowsPage() {
-  // Example static data (later you could fetch this from Firebase, a database, etc.)
   const shows = [
     {
       id: 1,
