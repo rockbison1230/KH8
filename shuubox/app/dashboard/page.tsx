@@ -60,7 +60,7 @@ export default function DashboardPage() {
     
       <div className="flex min-h-screen">
         <Sidebars />
-        <main className="flex-1 p-10 bg-white">
+        <main className="flex-1 bg-white pt-12 pb-12 px-30">
           {/* Header section */}
           <header className="flex justify-between items-center mb-10 p-5">
             <div className="flex items-center space-x-4">
