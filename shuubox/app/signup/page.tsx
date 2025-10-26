@@ -9,24 +9,24 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
 
   function makeState(): string {
-    const arr = new Uint32Array(4);
-    crypto.getRandomValues(arr);
-    return Array.from(arr, n => n.toString(36)).join("");
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
   }
 
   function buildDiscordAuthorizeURL(state: string) {
-    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID?.trim();
+    const functionRedirect = process.env.NEXT_PUBLIC_FUNCTION_REDIRECT_URL?.trim();
+
     if (!clientId) throw new Error("Missing NEXT_PUBLIC_DISCORD_CLIENT_ID");
+    if (!functionRedirect) throw new Error("Missing NEXT_PUBLIC_FUNCTION_REDIRECT_URL");
 
-    const redirectUri =
-      process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI
-      || "https://discordoauthredirect-zdqm753jtq-uc.a.run.app"; // your run.app URL
-
+    // Build safely; URLSearchParams will encode redirect_uri and scope correctly.
     const params = new URLSearchParams({
       client_id: clientId,
-      redirect_uri: redirectUri,
       response_type: "code",
-      scope: "identify email",
+      redirect_uri: functionRedirect,  // MUST match the redirect in Discord portal exactly
+      scope: "identify email",         // space becomes %20
       state,
     });
 
@@ -38,10 +38,9 @@ export default function SignUpPage() {
       setError("");
       setAuthing(true);
 
-   const state = makeState();
-localStorage.setItem("oauth_state", state);
-localStorage.setItem("oauth_state_ts", String(Date.now())); 
-
+      const state = makeState();
+      localStorage.setItem("oauth_state", state);
+      localStorage.setItem("oauth_state_ts", String(Date.now()));
 
       const url = buildDiscordAuthorizeURL(state);
       console.log("[OAuth] authorize URL", url);
